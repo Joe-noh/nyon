@@ -7,5 +7,7 @@ defmodule Nyon.Web.Router do
 
   scope "/api", Nyon.Web do
     pipe_through :api
+
+    resources "/posts", PostController, only: [:index, :create]
   end
 end
