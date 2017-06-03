@@ -29,5 +29,13 @@ defmodule Nyon.Web.PostControllerTest do
 
       assert json["post"] == %{"body" => "Hello"}
     end
+
+    test "returns error when the body is blank", %{conn: conn} do
+      json = conn
+        |> post(post_path(conn, :create), %{body: "   "})
+        |> json_response(422)
+
+      assert json["errors"]["attrs"]
+    end
   end
 end
