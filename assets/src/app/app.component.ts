@@ -9,6 +9,7 @@ import { PostService, Post } from './services/post.service';
 })
 export class AppComponent implements OnInit {
   private posts: Post[];
+  private body: string;
 
   constructor(private postService: PostService) {}
 
@@ -19,6 +20,13 @@ export class AppComponent implements OnInit {
   fetchPosts(): void {
     this.postService.fetchAll().subscribe((posts: Post[]) => {
       this.posts = posts;
+    });
+  }
+
+  createPost(): void {
+    this.postService.create(this.body).subscribe((post: Post) => {
+      this.body = "";
+      this.posts.unshift(post);
     });
   }
 }
