@@ -3,7 +3,7 @@ defmodule Nyon.Web.PostControllerTest do
 
   describe "index" do
     setup %{conn: conn} do
-      ConCache.ets({:global, :posts}) |> :ets.delete_all_objects
+      Nyon.Post.clear
 
       post(conn, post_path(conn, :create), %{body: "Hey"})
       post(conn, post_path(conn, :create), %{body: "What's"})

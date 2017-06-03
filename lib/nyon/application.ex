@@ -13,7 +13,7 @@ defmodule Nyon.Application do
       supervisor(Nyon.Repo, []),
       supervisor(Nyon.Web.Endpoint, []),
 
-      worker(ConCache, [cache_opts, [name: {:global, :posts}]]),
+      worker(ConCache, [cache_opts, [name: Nyon.Post.cache_name]]),
     ]
 
     opts = [strategy: :one_for_one, name: Nyon.Supervisor]
