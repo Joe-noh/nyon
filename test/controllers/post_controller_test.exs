@@ -1,8 +1,10 @@
 defmodule Nyon.Web.PostControllerTest do
-  use Nyon.Web.ConnCase, async: true
+  use Nyon.Web.ConnCase, async: false
 
   describe "index" do
     setup %{conn: conn} do
+      ConCache.ets({:global, :posts}) |> :ets.delete_all_objects
+
       post(conn, post_path(conn, :create), %{body: "Hey"})
       post(conn, post_path(conn, :create), %{body: "What's"})
       post(conn, post_path(conn, :create), %{body: "Up"})
@@ -25,7 +27,7 @@ defmodule Nyon.Web.PostControllerTest do
         |> post(post_path(conn, :create), %{body: "Hello"})
         |> json_response(201)
 
-      assert json["post"]["body"] == "Hello"
+      assert json["post"] == %{"body" => "Hello"}
     end
   end
 end

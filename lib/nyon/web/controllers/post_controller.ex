@@ -11,20 +11,20 @@ defmodule Nyon.Web.PostController do
 
     conn
     |> put_status(200)
-    |> json(%{posts: posts})
+    |> render("index.json", %{posts: posts})
   end
 
   def create(conn, %{"body" => body}) do
-    body = String.trim(body)
-    post = %{body: body}
+    trimmed = String.trim(body)
+    post = %{"body" => trimmed}
 
-    if String.length(body) > 0 do
+    if String.length(trimmed) > 0 do
       ConCache.put(@cache, random_string(), post)
     end
 
     conn
     |> put_status(201)
-    |> json(%{post: post})
+    |> render("show.json", %{post: post})
   end
 
   defp random_string do
