@@ -26,6 +26,8 @@ describe('PostService', () => {
   describe('fetchAll', () => {
     beforeEach(inject([ConnectionBackend], (mockBackend: MockBackend) => {
       mockBackend.connections.subscribe((connection: MockConnection) => {
+        expect(connection.request.method).toEqual(RequestMethod.Get);
+
         connection.mockRespond(new Response(new ResponseOptions({
           status: 200,
           body: {
@@ -47,8 +49,8 @@ describe('PostService', () => {
     beforeEach(inject([ConnectionBackend], (mockBackend: MockBackend) => {
       mockBackend.connections.subscribe((connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Post);
-        const requestBody = connection.request.json();
 
+        const requestBody = connection.request.json();
         connection.mockRespond(new Response(new ResponseOptions({
           status: 201,
           body: {
