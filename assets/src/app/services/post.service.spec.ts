@@ -1,6 +1,10 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Http, Response, ConnectionBackend, RequestOptions, BaseRequestOptions, ResponseOptions } from '@angular/http';
+import {
+  Http, Response, RequestMethod, ConnectionBackend,
+  RequestOptions, BaseRequestOptions, ResponseOptions
+} from '@angular/http';
+
 import { PostService, Post } from './post.service';
 
 describe('PostService', () => {
@@ -35,6 +39,28 @@ describe('PostService', () => {
       service.fetchAll().subscribe((posts: Post[]) => {
         expect(posts[0].body).toEqual("hey");
         expect(posts[1].body).toEqual("you");
+      });
+    })));
+  });
+
+  describe('create', () => {
+    beforeEach(inject([ConnectionBackend], (mockBackend: MockBackend) => {
+      mockBackend.connections.subscribe((connection: MockConnection) => {
+        expect(connection.request.method).toBe(RequestMethod.Post);
+        const requestBody = connection.request.json();
+
+        connection.mockRespond(new Response(new ResponseOptions({
+          status: 201,
+          body: {
+            post: {body: requestBody["body"]}
+          }
+        })));
+      });
+    }));
+
+    it('should return a post', async(inject([PostService], (service: PostService) => {
+      service.create("hello").subscribe((post: Post) => {
+        expect(post.body).toEqual("hello");
       });
     })));
   });
