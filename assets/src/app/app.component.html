@@ -1,8 +1,0 @@
-<ul>
-  <li *ngFor="let post of posts">{{post.body}}</li>
-</ul>
-
-<form>
-  <input type="text" name="body" [(ngModel)]="body" #bodyForm="ngModel" required>
-  <button type="submit" (click)="createPost()">Post</button>
-</form>
