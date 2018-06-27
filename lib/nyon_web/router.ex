@@ -18,6 +18,7 @@ defmodule NyonWeb.Router do
 
     get "/", PageController, :index
     resources "/users", UserController
+    resources "/login", MagicLinkController, only: [:show, :new, :create]
   end
 
   # Other scopes may use custom stacks.

@@ -101,4 +101,100 @@ defmodule Nyon.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  alias Nyon.Accounts.MagicLink
+
+  @doc """
+  Returns the list of magic_links.
+
+  ## Examples
+
+      iex> list_magic_links()
+      [%MagicLink{}, ...]
+
+  """
+  def list_magic_links do
+    Repo.all(MagicLink)
+  end
+
+  @doc """
+  Gets a single magic_link.
+
+  Raises `Ecto.NoResultsError` if the Magic link does not exist.
+
+  ## Examples
+
+      iex> get_magic_link!(123)
+      %MagicLink{}
+
+      iex> get_magic_link!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_magic_link!(id), do: Repo.get!(MagicLink, id)
+
+  @doc """
+  Creates a magic_link.
+
+  ## Examples
+
+      iex> create_magic_link(%{field: value})
+      {:ok, %MagicLink{}}
+
+      iex> create_magic_link(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_magic_link(attrs \\ %{}) do
+    %MagicLink{}
+    |> MagicLink.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a magic_link.
+
+  ## Examples
+
+      iex> update_magic_link(magic_link, %{field: new_value})
+      {:ok, %MagicLink{}}
+
+      iex> update_magic_link(magic_link, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_magic_link(%MagicLink{} = magic_link, attrs) do
+    magic_link
+    |> MagicLink.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a MagicLink.
+
+  ## Examples
+
+      iex> delete_magic_link(magic_link)
+      {:ok, %MagicLink{}}
+
+      iex> delete_magic_link(magic_link)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_magic_link(%MagicLink{} = magic_link) do
+    Repo.delete(magic_link)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking magic_link changes.
+
+  ## Examples
+
+      iex> change_magic_link(magic_link)
+      %Ecto.Changeset{source: %MagicLink{}}
+
+  """
+  def change_magic_link(%MagicLink{} = magic_link) do
+    MagicLink.changeset(magic_link, %{})
+  end
 end
