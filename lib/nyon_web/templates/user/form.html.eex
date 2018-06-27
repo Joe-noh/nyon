@@ -9,11 +9,10 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :email %>
-  <%= text_input f, :email %>
-  <%= error_tag f, :email %>
+  <%= hidden_input f, :email, value: @magic_link.email %>
+  <%= hidden_input f, :token, value: @magic_link.token %>
 
   <div>
-    <%= submit "Save" %>
+    <%= submit "Signup" %>
   </div>
 <% end %>

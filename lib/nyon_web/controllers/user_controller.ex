@@ -17,7 +17,7 @@ defmodule NyonWeb.UserController do
         conn
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.user_path(conn, :show, user))
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end

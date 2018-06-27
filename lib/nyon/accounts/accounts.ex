@@ -49,10 +49,15 @@ defmodule Nyon.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+  def create_user(attrs) do
+    with {token, attrs} = Map.pop(attrs, "token"),
+         magic_link = get_magic_link_by_token!(token) do
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
+    else
+      error -> {:error, error}
+    end
   end
 
   @doc """
