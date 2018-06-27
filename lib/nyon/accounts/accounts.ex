@@ -131,11 +131,15 @@ defmodule Nyon.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_magic_link!(id, token) do
+  def get_magic_link_by_token!(token) do
+    now = NaiveDateTime.utc_now()
+
     MagicLink
-    |> where([m], m.id == ^id)
     |> where([m], m.token == ^token)
-    |> Repo.one!()
+    |> where([m], m.expired_at > ^now)
+    |> order_by([m], desc: m.inserted_at)
+    |> first()
+    |> Repo.one!
   end
 
   @doc """

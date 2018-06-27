@@ -4,14 +4,11 @@ defmodule NyonWeb.UserController do
   alias Nyon.Accounts
   alias Nyon.Accounts.User
 
-  def index(conn, _params) do
-    users = Accounts.list_users()
-    render(conn, "index.html", users: users)
-  end
-
-  def new(conn, _params) do
+  def new(conn, %{"token" => token}) do
+    magic_link = Accounts.get_magic_link_by_token!(token)
     changeset = Accounts.change_user(%User{})
-    render(conn, "new.html", changeset: changeset)
+
+    render(conn, "new.html", changeset: changeset, magic_link: magic_link)
   end
 
   def create(conn, %{"user" => user_params}) do
