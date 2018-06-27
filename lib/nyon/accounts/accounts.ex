@@ -131,7 +131,12 @@ defmodule Nyon.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_magic_link!(id), do: Repo.get!(MagicLink, id)
+  def get_magic_link!(id, token) do
+    MagicLink
+    |> where([m], m.id == ^id)
+    |> where([m], m.token == ^token)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a magic_link.

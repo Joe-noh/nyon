@@ -11,11 +11,7 @@
   <%= text_input f, :email %>
   <%= error_tag f, :email %>
 
-  <%= label f, :token %>
-  <%= text_input f, :token %>
-  <%= error_tag f, :token %>
-
   <div>
-    <%= submit "Save" %>
+    <%= submit "Send Magic Link" %>
   </div>
 <% end %>

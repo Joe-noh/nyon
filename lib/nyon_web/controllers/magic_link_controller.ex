@@ -4,9 +4,8 @@ defmodule NyonWeb.MagicLinkController do
   alias Nyon.Accounts
   alias Nyon.Accounts.MagicLink
 
-  def show(conn, %{"id" => id}) do
-    magic_link = Accounts.get_magic_link!(id)
-    render(conn, "show.html", magic_link: magic_link)
+  def show(conn, _params) do
+    render(conn, "show.html")
   end
 
   def new(conn, _params) do
@@ -17,10 +16,12 @@ defmodule NyonWeb.MagicLinkController do
   def create(conn, %{"magic_link" => magic_link_params}) do
     case Accounts.create_magic_link(magic_link_params) do
       {:ok, magic_link} ->
+        Routes.user_url(conn, :new, %{token: magic_link.token})
+        |> IO.inspect
+
         conn
-        |> put_flash(:info, "Magic link created successfully.")
-        |> redirect(to: Routes.magic_link_path(conn, :show, magic_link))
-      {:error, %Ecto.Changeset{} = changeset} ->
+        |> redirect(to: Routes.magic_link_path(conn, :show))
+      {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
