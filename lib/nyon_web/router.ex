@@ -23,6 +23,10 @@ defmodule NyonWeb.Router do
     post "/login", MagicLinkController, :create
   end
 
+  if Mix.env == :dev do
+    forward "/mailer", Bamboo.SentEmailViewerPlug
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", NyonWeb do
   #   pipe_through :api
