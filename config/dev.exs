@@ -58,3 +58,6 @@ config :nyon, Nyon.Repo,
   database: "nyon_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :nyon, Nyon.Mailer,
+  adapter: Bamboo.LocalAdapter

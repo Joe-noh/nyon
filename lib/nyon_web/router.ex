@@ -17,6 +17,14 @@ defmodule NyonWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    resources "/users", UserController
+    get "/login", MagicLinkController, :new
+    get "/login/sent", MagicLinkController, :show
+    post "/login", MagicLinkController, :create
+  end
+
+  if Mix.env == :dev do
+    forward "/mailer", Bamboo.SentEmailViewerPlug
   end
 
   # Other scopes may use custom stacks.

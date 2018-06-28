@@ -16,3 +16,6 @@ config :nyon, Nyon.Repo,
   database: "nyon_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :nyon, Nyon.Mailer,
+  adapter: Bamboo.TestAdapter

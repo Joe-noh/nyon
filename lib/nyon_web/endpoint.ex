@@ -38,7 +38,8 @@ defmodule NyonWeb.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_nyon_key",
-    signing_salt: "MWAUh7Eh"
+    signing_salt: "MWAUh7Eh",
+    http_only: false
 
   plug NyonWeb.Router
 end
