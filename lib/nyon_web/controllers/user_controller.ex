@@ -5,10 +5,15 @@ defmodule NyonWeb.UserController do
   alias Nyon.Accounts.User
 
   def new(conn, %{"token" => token}) do
-    with {:ok, magic_link} <- Accounts.get_magic_link_by_token(token),
-         changeset = Accounts.change_user(%User{}) do
-      render(conn, "new.html", changeset: changeset, magic_link: magic_link)
-    else
+    case Accounts.get_magic_link_by_token(token) do
+      {:ok, magic_link} ->
+        case Accounts.get_user_by_email(magic_link.email) do
+          {:ok, user} ->
+            render(conn, "show.html", user: user)
+          {:error, :not_found} ->
+            changeset = Accounts.change_user(%User{})
+            render(conn, "new.html", changeset: changeset, magic_link: magic_link)
+        end
       {:error, _} ->
         conn
         |> put_view(ErrorView)

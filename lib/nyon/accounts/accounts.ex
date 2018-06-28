@@ -6,6 +6,18 @@ defmodule Nyon.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_email(email) do
+    User
+    |> where([u], u.email == ^email)
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      user ->
+        {:ok, user}
+    end
+  end
+
   def create_user(attrs) do
     %User{}
     |> User.changeset(attrs)

@@ -17,6 +17,7 @@ defmodule Nyon.Accounts.User do
     |> validate_name_format()
     |> validate_length(:name, min: 3)
     |> validate_required([:name, :email])
+    |> unique_constraint(:email, name: :users_email_index)
   end
 
   defp downcase_email(changeset) do
