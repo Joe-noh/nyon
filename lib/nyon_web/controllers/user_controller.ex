@@ -5,18 +5,33 @@ defmodule NyonWeb.UserController do
   alias Nyon.Accounts.User
 
   def new(conn, %{"token" => token}) do
-    magic_link = Accounts.get_magic_link_by_token!(token)
-    changeset = Accounts.change_user(%User{})
-
-    render(conn, "new.html", changeset: changeset, magic_link: magic_link)
+    with {:ok, magic_link} <- Accounts.get_magic_link_by_token(token),
+         changeset = Accounts.change_user(%User{}) do
+      render(conn, "new.html", changeset: changeset, magic_link: magic_link)
+    else
+      {:error, _} ->
+        conn
+        |> put_view(ErrorView)
+        |> render("400.html")
+    end
   end
 
   def create(conn, %{"user" => user_params}) do
-    case Accounts.create_user(user_params) do
-      {:ok, user} ->
+    with {token, user_params} when not is_nil(token) <- Map.pop(user_params, "token"),
+         {:ok, magic_link} <- Accounts.get_magic_link_by_token(token),
+         {:ok, user} <- Accounts.create_user(user_params) do
+      conn
+      |> put_flash(:info, "User created successfully.")
+      |> redirect(to: Routes.user_path(conn, :show, user))
+    else
+      {nil, _map} ->
         conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: Routes.user_path(conn, :show, user))
+        |> put_view(ErrorView)
+        |> render("404.html")
+      {:error, :not_found} ->
+        conn
+        |> put_view(ErrorView)
+        |> render("400.html")
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end

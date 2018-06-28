@@ -24,6 +24,7 @@ defmodule NyonWeb do
       import Plug.Conn
       import NyonWeb.Gettext
       alias NyonWeb.Router.Helpers, as: Routes
+      alias NyonWeb.ErrorView
     end
   end
 

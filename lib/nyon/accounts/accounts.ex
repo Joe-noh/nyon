@@ -7,14 +7,9 @@ defmodule Nyon.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
   def create_user(attrs) do
-    with {token, attrs} = Map.pop(attrs, "token"),
-         magic_link = get_magic_link_by_token!(token) do
-      %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert()
-    else
-      error -> {:error, error}
-    end
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
   end
 
   def update_user(%User{} = user, attrs) do
@@ -31,7 +26,7 @@ defmodule Nyon.Accounts do
     User.changeset(user, %{})
   end
 
-  def get_magic_link_by_token!(token) do
+  def get_magic_link_by_token(token) do
     now = NaiveDateTime.utc_now()
 
     MagicLink
@@ -39,7 +34,13 @@ defmodule Nyon.Accounts do
     |> where([m], m.expired_at > ^now)
     |> order_by([m], desc: m.inserted_at)
     |> first()
-    |> Repo.one!
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      magic_link ->
+        {:ok, magic_link}
+    end
   end
 
   def create_magic_link(attrs \\ %{}) do
