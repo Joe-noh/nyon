@@ -22,7 +22,7 @@ defmodule Nyon.Accounts.MagicLink do
   defp generate_token(changeset) do
     case get_change(changeset, :token) do
       nil ->
-        token = :crypto.strong_rand_bytes(32) |> Base.encode64 |> binary_part(0, 32)
+        token = :crypto.strong_rand_bytes(32) |> Base.encode64() |> binary_part(0, 32)
         put_change(changeset, :token, token)
       _token ->
         changeset
