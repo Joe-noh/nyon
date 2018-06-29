@@ -6,16 +6,10 @@ defmodule Nyon.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
-  def get_user_by_email(email) do
+  def get_user_by(condition) do
     User
-    |> where([u], u.email == ^email)
-    |> Repo.one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      user ->
-        {:ok, user}
-    end
+    |> where(^condition)
+    |> wrap_one()
   end
 
   def create_user(attrs) do
@@ -38,7 +32,7 @@ defmodule Nyon.Accounts do
     User.changeset(user, %{})
   end
 
-  def get_magic_link_by_token(token) do
+  def get_effective_magic_link(token) do
     now = NaiveDateTime.utc_now()
 
     MagicLink
@@ -46,13 +40,7 @@ defmodule Nyon.Accounts do
     |> where([m], m.expired_at > ^now)
     |> order_by([m], desc: m.inserted_at)
     |> first()
-    |> Repo.one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      magic_link ->
-        {:ok, magic_link}
-    end
+    |> wrap_one()
   end
 
   def create_magic_link(attrs \\ %{}) do
@@ -73,5 +61,16 @@ defmodule Nyon.Accounts do
 
   def change_magic_link(%MagicLink{} = magic_link) do
     MagicLink.changeset(magic_link, %{})
+  end
+
+  defp wrap_one(query) do
+    query
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      struct ->
+        {:ok, struct}
+    end
   end
 end
