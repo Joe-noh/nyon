@@ -3,27 +3,39 @@ defmodule NyonWeb.MagicLinkControllerTest do
 
   @attrs %{email: "hello@example.com"}
 
-  describe "new magic_link" do
+  describe "new action" do
     test "renders form", %{conn: conn} do
-      conn = get conn, Routes.magic_link_path(conn, :new)
-      assert html_response(conn, 200) =~ "New Magic link"
+      html = conn
+        |> get(Routes.magic_link_path(conn, :new))
+        |> html_response(200)
+
+      assert html =~ "New Magic link"
     end
   end
 
-  describe "create magic_link" do
+  describe "show action" do
+    test "says that magic link was sent", %{conn: conn} do
+      html = conn
+        |> get(Routes.magic_link_path(conn, :show))
+        |> html_response(200)
+
+      assert html =~ "We sent a magic link to you"
+    end
+  end
+
+  describe "create action" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, Routes.magic_link_path(conn, :create), magic_link: @attrs
+      conn = post(conn, Routes.magic_link_path(conn, :create), magic_link: @attrs)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.magic_link_path(conn, :show, id)
-
-      conn = get conn, Routes.magic_link_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Magic link"
+      assert redirected_to(conn) == Routes.magic_link_path(conn, :show)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, Routes.magic_link_path(conn, :create), magic_link: %{}
-      assert html_response(conn, 200) =~ "New Magic link"
+      html = conn
+        |> post(Routes.magic_link_path(conn, :create), magic_link: %{})
+        |> html_response(200)
+
+      assert html =~ "New Magic link"
     end
   end
 end
