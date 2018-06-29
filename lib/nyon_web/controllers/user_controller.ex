@@ -24,9 +24,8 @@ defmodule NyonWeb.UserController do
     end
   end
 
-  def create(conn, %{"user" => user_params}) do
-    with {token, user_params} when not is_nil(token) <- Map.pop(user_params, "token"),
-         {:ok, _magic_link} <- Accounts.get_magic_link_by_token(token),
+  def create(conn, %{"user" => user_params = %{"token" => token}}) do
+    with {:ok, _magic_link} <- Accounts.get_magic_link_by_token(token),
          {:ok, user} <- Accounts.create_user(user_params) do
       conn
       |> put_session(:user_id, user.id)
@@ -43,8 +42,15 @@ defmodule NyonWeb.UserController do
         |> put_view(ErrorView)
         |> render("400.html")
       {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        {:ok, magic_link} = Accounts.get_magic_link_by_token(token)
+        render(conn, "new.html", changeset: changeset, magic_link: magic_link)
     end
+  end
+
+  def create(conn, _params) do
+    conn
+    |> put_view(ErrorView)
+    |> render("400.html")
   end
 
   def show(conn, %{"id" => id}) do
