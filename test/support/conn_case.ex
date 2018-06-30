@@ -21,6 +21,8 @@ defmodule NyonWeb.ConnCase do
       use Phoenix.ConnTest
       alias NyonWeb.Router.Helpers, as: Routes
 
+      alias NyonWeb.ConnCaseHelpers, as: Helpers
+
       # The default endpoint for testing
       @endpoint NyonWeb.Endpoint
     end

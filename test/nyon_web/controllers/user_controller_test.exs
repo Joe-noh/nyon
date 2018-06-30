@@ -18,7 +18,7 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "show action" do
-    setup [:create_user]
+    setup [:create_user, :login]
 
     test "renders the user", %{conn: conn, user: user} do
       html = conn
@@ -51,7 +51,7 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "edit action" do
-    setup [:create_user]
+    setup [:create_user, :login]
 
     test "renders form for editing chosen user", %{conn: conn, user: user} do
       conn = get conn, Routes.user_path(conn, :edit, user)
@@ -60,7 +60,7 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "update action" do
-    setup [:create_user]
+    setup [:create_user, :login]
 
     test "redirects when data is valid", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: %{@attrs | name: "jack"})
@@ -83,14 +83,11 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "delete action" do
-    setup [:create_user]
+    setup [:create_user, :login]
 
     test "deletes chosen user", %{conn: conn, user: user} do
       conn = delete conn, Routes.user_path(conn, :delete, user)
-      assert redirected_to(conn) == Routes.user_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, Routes.user_path(conn, :show, user)
-      end
+      assert redirected_to(conn) == Routes.login_path(conn, :new)
     end
   end
 
@@ -102,6 +99,11 @@ defmodule NyonWeb.UserControllerTest do
   defp create_magic_link(_) do
     magic_link = fixture(:magic_link)
     %{magic_link: magic_link}
+  end
+
+  defp login(%{conn: conn, user: user}) do
+    conn = Helpers.login(conn, user)
+    %{conn: conn}
   end
 
   defp fixture(:user) do
