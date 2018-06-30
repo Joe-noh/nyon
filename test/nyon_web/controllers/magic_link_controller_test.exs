@@ -6,7 +6,7 @@ defmodule NyonWeb.MagicLinkControllerTest do
   describe "new action" do
     test "renders form", %{conn: conn} do
       html = conn
-        |> get(Routes.magic_link_path(conn, :new))
+        |> get(Routes.login_path(conn, :new))
         |> html_response(200)
 
       assert html =~ "New Magic link"
