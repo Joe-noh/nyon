@@ -4,6 +4,9 @@ defmodule NyonWeb.UserController do
   alias Nyon.Accounts
   alias Nyon.Accounts.User
 
+  plug :assign_user when action in [:show, :edit, :update, :delete]
+  plug :correct_user when action in [:edit, :update, :delete]
+
   def new(conn, %{"token" => token}) do
     case Accounts.get_effective_magic_link(token) do
       {:ok, magic_link} ->
@@ -53,19 +56,19 @@ defmodule NyonWeb.UserController do
     |> render("400.html")
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
+  def show(conn, %{"id" => _}) do
+    user = conn.assigns |> Map.get(:user)
     render(conn, "show.html", user: user)
   end
 
-  def edit(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
+  def edit(conn, %{"id" => _}) do
+    user = conn.assigns |> Map.get(:user)
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Accounts.get_user!(id)
+  def update(conn, %{"id" => _, "user" => user_params}) do
+    user = conn.assigns |> Map.get(:user)
 
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
@@ -77,12 +80,27 @@ defmodule NyonWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
+  def delete(conn, %{"id" => _}) do
+    user = conn.assigns |> Map.get(:user)
     {:ok, _user} = Accounts.delete_user(user)
 
     conn
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: Routes.login_path(conn, :new))
+  end
+
+  defp assign_user(conn, _opts) do
+    id = conn.params |> Map.get("id")
+    conn |> assign(:user, Accounts.get_user!(id))
+  end
+
+  defp correct_user(conn, _opts) do
+    %{current_user: current_user, user: user} = Map.take(conn.assigns, [:current_user, :user])
+
+    if current_user.id == user.id do
+      conn
+    else
+      conn |> redirect(to: Routes.page_path(conn, :index))
+    end
   end
 end
