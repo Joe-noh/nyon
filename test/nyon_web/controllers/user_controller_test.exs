@@ -5,6 +5,18 @@ defmodule NyonWeb.UserControllerTest do
 
   @attrs %{email: "hello@example.com", name: "john_doe"}
 
+  defp create_magic_link(_) do
+    {:ok, magic_link} = Accounts.create_magic_link(%{email: @attrs.email})
+    %{magic_link: magic_link}
+  end
+
+  defp login(%{conn: conn}) do
+    {:ok, user} = Accounts.create_user(@attrs)
+    conn = Helpers.login(conn, user)
+
+    %{conn: conn, user: user}
+  end
+
   describe "new action" do
     setup [:create_magic_link]
 
@@ -18,7 +30,7 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "show action" do
-    setup [:create_user, :login]
+    setup [:login]
 
     test "renders the user", %{conn: conn, user: user} do
       html = conn
@@ -51,16 +63,19 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "edit action" do
-    setup [:create_user, :login]
+    setup [:login]
 
     test "renders form for editing chosen user", %{conn: conn, user: user} do
-      conn = get conn, Routes.user_path(conn, :edit, user)
-      assert html_response(conn, 200) =~ "Edit User"
+      html = conn
+        |> get(Routes.user_path(conn, :edit, user))
+        |> html_response(conn, 200)
+
+      assert html =~ "Edit User"
     end
   end
 
   describe "update action" do
-    setup [:create_user, :login]
+    setup [:login]
 
     test "redirects when data is valid", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: %{@attrs | name: "jack"})
@@ -83,34 +98,11 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "delete action" do
-    setup [:create_user, :login]
+    setup [:login]
 
     test "deletes chosen user", %{conn: conn, user: user} do
-      conn = delete conn, Routes.user_path(conn, :delete, user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
       assert redirected_to(conn) == Routes.login_path(conn, :new)
     end
-  end
-
-  defp create_user(_) do
-    user = fixture(:user)
-    %{user: user}
-  end
-
-  defp create_magic_link(_) do
-    magic_link = fixture(:magic_link)
-    %{magic_link: magic_link}
-  end
-
-  defp login(%{conn: conn, user: user}) do
-    conn = Helpers.login(conn, user)
-    %{conn: conn}
-  end
-
-  defp fixture(:user) do
-    Accounts.create_user(@attrs) |> elem(1)
-  end
-
-  defp fixture(:magic_link) do
-    Accounts.create_magic_link(%{email: @attrs.email}) |> elem(1)
   end
 end
