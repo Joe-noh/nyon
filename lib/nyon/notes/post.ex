@@ -2,10 +2,10 @@ defmodule Nyon.Notes.Post do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "posts" do
     field :body, :string
-    field :user_id, :id
+
+    belongs_to :user, Nyon.Accounts.User
 
     timestamps()
   end
@@ -15,5 +15,6 @@ defmodule Nyon.Notes.Post do
     post
     |> cast(attrs, [:body])
     |> validate_required([:body])
+    |> assoc_constraint(:user)
   end
 end

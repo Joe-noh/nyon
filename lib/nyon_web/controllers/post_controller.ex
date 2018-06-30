@@ -21,10 +21,8 @@ defmodule NyonWeb.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
-    %{user: user} = conn.assigns
-
     case Notes.create_post(post_params) do
-      {:ok, post} ->
+      {:ok, _post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
         |> redirect(to: Routes.page_path(conn, :index))
@@ -33,8 +31,8 @@ defmodule NyonWeb.PostController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    %{user: user, post: post} = conn.assigns
+  def delete(conn, %{"id" => _id}) do
+    %{post: post} = conn.assigns
     {:ok, _post} = Notes.delete_post(post)
 
     conn
