@@ -83,6 +83,6 @@ defmodule NyonWeb.UserController do
 
     conn
     |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: Routes.user_path(conn, :index))
+    |> redirect(to: Routes.login_path(conn, :new))
   end
 end
