@@ -32,7 +32,9 @@ defmodule NyonWeb.Router do
       pipe_through :auth
 
       get "/", PageController, :index
-      resources "/users", UserController, only: [:index, :show, :edit, :update, :delete]
+      resources "/users", UserController, only: [:index, :show, :edit, :update, :delete] do
+        resources "/posts", PostController
+      end
     end
   end
 

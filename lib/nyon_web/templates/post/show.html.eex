@@ -1,0 +1,13 @@
+<h2>Show Post</h2>
+
+<ul>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @post.body %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.user_post_path(@conn, :edit, @post) %></span>
+<span><%= link "Back", to: Routes.user_post_path(@conn, :index) %></span>
