@@ -6,16 +6,17 @@ defmodule NyonWeb.PostControllerTest do
   @post_attrs %{body: "Hello World"}
   @user_attrs %{email: "hello@example.com", name: "john_doe"}
 
-  defp create_post(_) do
-    {:ok, post} = Notes.create_post(@post_attrs)
-    %{post: post}
-  end
-
   defp login(%{conn: conn}) do
     {:ok, user} = Accounts.create_user(@user_attrs)
     conn = Helpers.login(conn, user)
 
     %{conn: conn, user: user}
+  end
+
+  defp create_post(%{user: user}) do
+    {:ok, post} = Notes.create_post(user, @post_attrs)
+
+    %{post: post}
   end
 
   describe "new post" do

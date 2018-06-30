@@ -1,64 +1,42 @@
 defmodule Nyon.NotesTest do
   use Nyon.DataCase
 
-  alias Nyon.Notes
+  alias Nyon.{Notes, Accounts}
 
   describe "posts" do
     alias Nyon.Notes.Post
 
-    @valid_attrs %{body: "some body"}
-    @update_attrs %{body: "some updated body"}
-    @invalid_attrs %{body: nil}
+    @post_attrs %{body: "Hello World"}
+    @user_attrs %{name: "john_doe", email: "hello@example.com"}
 
-    def post_fixture(attrs \\ %{}) do
-      {:ok, post} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Notes.create_post()
+    setup do
+      {:ok, user} = Accounts.create_user(@user_attrs)
 
-      post
+      %{user: user}
     end
 
-    test "list_posts/0 returns all posts" do
-      post = post_fixture()
-      assert Notes.list_posts() == [post]
-    end
-
-    test "get_post!/1 returns the post with given id" do
-      post = post_fixture()
+    test "get_post!/1 returns the post with given id", %{user: user} do
+      {:ok, post} = Notes.create_post(user, @post_attrs)
       assert Notes.get_post!(post.id) == post
     end
 
-    test "create_post/1 with valid data creates a post" do
-      assert {:ok, %Post{} = post} = Notes.create_post(@valid_attrs)
-      assert post.body == "some body"
+    test "create_post/1 with valid data creates a post", %{user: user} do
+      assert {:ok, %Post{} = post} = Notes.create_post(user, %{body: "Hello"})
+      assert post.body == "Hello"
     end
 
-    test "create_post/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Notes.create_post(@invalid_attrs)
+    test "create_post/1 with invalid data returns error changeset", %{user: user} do
+      assert {:error, %Ecto.Changeset{}} = Notes.create_post(user, %{body: ""})
     end
 
-    test "update_post/2 with valid data updates the post" do
-      post = post_fixture()
-      assert {:ok, %Post{} = post} = Notes.update_post(post, @update_attrs)
-      
-      assert post.body == "some updated body"
-    end
-
-    test "update_post/2 with invalid data returns error changeset" do
-      post = post_fixture()
-      assert {:error, %Ecto.Changeset{}} = Notes.update_post(post, @invalid_attrs)
-      assert post == Notes.get_post!(post.id)
-    end
-
-    test "delete_post/1 deletes the post" do
-      post = post_fixture()
+    test "delete_post/1 deletes the post", %{user: user} do
+      {:ok, post} = Notes.create_post(user, @post_attrs)
       assert {:ok, %Post{}} = Notes.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Notes.get_post!(post.id) end
     end
 
-    test "change_post/1 returns a post changeset" do
-      post = post_fixture()
+    test "change_post/1 returns a post changeset", %{user: user} do
+      {:ok, post} = Notes.create_post(user, @post_attrs)
       assert %Ecto.Changeset{} = Notes.change_post(post)
     end
   end

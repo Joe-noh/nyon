@@ -8,20 +8,15 @@ defmodule NyonWeb.PostController do
   plug :assign_post when action in [:delete]
   plug :correct_user when action in [:delete]
 
-  def index(conn, _params) do
-    %{user: user} = conn.assigns
-    posts = Notes.list_posts()
-
-    render(conn, "index.html", posts: posts, user: user)
-  end
-
   def new(conn, _params) do
     changeset = Notes.change_post(%Post{})
     render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"post" => post_params}) do
-    case Notes.create_post(post_params) do
+    %{current_user: current_user} = conn.assigns
+
+    case Notes.create_post(current_user, post_params) do
       {:ok, _post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
