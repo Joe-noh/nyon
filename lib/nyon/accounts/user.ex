@@ -6,6 +6,8 @@ defmodule Nyon.Accounts.User do
     field :email, :string
     field :name, :string
 
+    has_many :posts, Nyon.Notes.Post, on_delete: :delete_all
+
     timestamps()
   end
 

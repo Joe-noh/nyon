@@ -68,7 +68,7 @@ defmodule NyonWeb.UserControllerTest do
     test "renders form for editing chosen user", %{conn: conn, user: user} do
       html = conn
         |> get(Routes.user_path(conn, :edit, user))
-        |> html_response(conn, 200)
+        |> html_response(200)
 
       assert html =~ "Edit User"
     end

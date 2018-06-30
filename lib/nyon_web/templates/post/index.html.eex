@@ -1,0 +1,24 @@
+<h2>Listing Posts</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for post <- @posts do %>
+    <tr>
+      <td><%= post.body %></td>
+
+      <td>
+        <%= link "Delete", to: Routes.user_post_path(@conn, :delete, @current_user, post), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Post", to: Routes.user_post_path(@conn, :new, @current_user) %></span>
