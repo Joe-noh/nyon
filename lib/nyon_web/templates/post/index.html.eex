@@ -14,13 +14,11 @@
       <td><%= post.body %></td>
 
       <td>
-        <%= link "Show", to: Routes.user_post_path(@conn, :show, post) %>
-        <%= link "Edit", to: Routes.user_post_path(@conn, :edit, post) %>
-        <%= link "Delete", to: Routes.user_post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link "Delete", to: Routes.user_post_path(@conn, :delete, @current_user, post), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New Post", to: Routes.user_post_path(@conn, :new) %></span>
+<span><%= link "New Post", to: Routes.user_post_path(@conn, :new, @current_user) %></span>

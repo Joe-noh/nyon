@@ -1,88 +1,53 @@
 defmodule NyonWeb.PostControllerTest do
   use NyonWeb.ConnCase
 
-  alias Nyon.Notes
+  alias Nyon.{Notes, Accounts}
 
-  @create_attrs %{body: "some body"}
-  @update_attrs %{body: "some updated body"}
-  @invalid_attrs %{body: nil}
+  @post_attrs %{body: "Hello World"}
+  @user_attrs %{email: "hello@example.com", name: "john_doe"}
 
-  def fixture(:post) do
-    {:ok, post} = Notes.create_post(@create_attrs)
-    post
+  defp create_post(_) do
+    {:ok, post} = Notes.create_post(@post_attrs)
+    %{post: post}
   end
 
-  describe "index" do
-    test "lists all posts", %{conn: conn} do
-      conn = get conn, Routes.user_post_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Posts"
-    end
+  defp login(%{conn: conn}) do
+    {:ok, user} = Accounts.create_user(@user_attrs)
+    conn = Helpers.login(conn, user)
+
+    %{conn: conn, user: user}
   end
 
   describe "new post" do
-    test "renders form", %{conn: conn} do
-      conn = get conn, Routes.user_post_path(conn, :new)
+    setup [:login]
+
+    test "renders form", %{conn: conn, user: user} do
+      conn = get conn, Routes.user_post_path(conn, :new, user)
       assert html_response(conn, 200) =~ "New Post"
     end
   end
 
   describe "create post" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, Routes.user_post_path(conn, :create), post: @create_attrs
+    setup [:login]
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.user_post_path(conn, :show, id)
+    test "redirects to show when data is valid", %{conn: conn, user: user} do
+      conn = post conn, Routes.user_post_path(conn, :create, user), post: @post_attrs
 
-      conn = get conn, Routes.user_post_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Post"
+      assert redirected_to(conn) == Routes.page_path(conn, :index)
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, Routes.user_post_path(conn, :create), post: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, user: user} do
+      conn = post conn, Routes.user_post_path(conn, :create, user), post: %{body: ""}
       assert html_response(conn, 200) =~ "New Post"
     end
   end
 
-  describe "edit post" do
-    setup [:create_post]
-
-    test "renders form for editing chosen post", %{conn: conn, post: post} do
-      conn = get conn, Routes.user_post_path(conn, :edit, post)
-      assert html_response(conn, 200) =~ "Edit Post"
-    end
-  end
-
-  describe "update post" do
-    setup [:create_post]
-
-    test "redirects when data is valid", %{conn: conn, post: post} do
-      conn = put conn, Routes.user_post_path(conn, :update, post), post: @update_attrs
-      assert redirected_to(conn) == Routes.user_post_path(conn, :show, post)
-
-      conn = get conn, Routes.user_post_path(conn, :show, post)
-      assert html_response(conn, 200) =~ "some updated body"
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, post: post} do
-      conn = put conn, Routes.user_post_path(conn, :update, post), post: @invalid_attrs
-      assert html_response(conn, 200) =~ "Edit Post"
-    end
-  end
-
   describe "delete post" do
-    setup [:create_post]
+    setup [:login, :create_post]
 
-    test "deletes chosen post", %{conn: conn, post: post} do
-      conn = delete conn, Routes.user_post_path(conn, :delete, post)
-      assert redirected_to(conn) == Routes.user_post_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, Routes.user_post_path(conn, :show, post)
-      end
+    test "deletes chosen post", %{conn: conn, user: user, post: post} do
+      conn = delete conn, Routes.user_post_path(conn, :delete, user, post)
+      assert redirected_to(conn) == Routes.page_path(conn, :index)
     end
-  end
-
-  defp create_post(_) do
-    post = fixture(:post)
-    {:ok, post: post}
   end
 end

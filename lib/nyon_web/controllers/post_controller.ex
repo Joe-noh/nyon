@@ -1,12 +1,18 @@
 defmodule NyonWeb.PostController do
   use NyonWeb, :controller
 
-  alias Nyon.Notes
+  alias Nyon.{Notes, Accounts}
   alias Nyon.Notes.Post
 
+  plug :assign_user
+  plug :assign_post when action in [:delete]
+  plug :correct_user when action in [:delete]
+
   def index(conn, _params) do
+    %{user: user} = conn.assigns
     posts = Notes.list_posts()
-    render(conn, "index.html", posts: posts)
+
+    render(conn, "index.html", posts: posts, user: user)
   end
 
   def new(conn, _params) do
@@ -15,46 +21,44 @@ defmodule NyonWeb.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
+    %{user: user} = conn.assigns
+
     case Notes.create_post(post_params) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
-        |> redirect(to: Routes.user_post_path(conn, :show, post))
+        |> redirect(to: Routes.page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    post = Notes.get_post!(id)
-    render(conn, "show.html", post: post)
-  end
-
-  def edit(conn, %{"id" => id}) do
-    post = Notes.get_post!(id)
-    changeset = Notes.change_post(post)
-    render(conn, "edit.html", post: post, changeset: changeset)
-  end
-
-  def update(conn, %{"id" => id, "post" => post_params}) do
-    post = Notes.get_post!(id)
-
-    case Notes.update_post(post, post_params) do
-      {:ok, post} ->
-        conn
-        |> put_flash(:info, "Post updated successfully.")
-        |> redirect(to: Routes.user_post_path(conn, :show, post))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", post: post, changeset: changeset)
-    end
-  end
-
   def delete(conn, %{"id" => id}) do
-    post = Notes.get_post!(id)
+    %{user: user, post: post} = conn.assigns
     {:ok, _post} = Notes.delete_post(post)
 
     conn
     |> put_flash(:info, "Post deleted successfully.")
-    |> redirect(to: Routes.user_post_path(conn, :index))
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  defp assign_user(conn, _opts) do
+    id = conn.params |> Map.get("user_id")
+    conn |> assign(:user, Accounts.get_user!(id))
+  end
+
+  defp assign_post(conn, _opts) do
+    id = conn.params |> Map.get("id")
+    conn |> assign(:post, Notes.get_post!(id))
+  end
+
+  defp correct_user(conn, _opts) do
+    %{current_user: current_user, user: user} = Map.take(conn.assigns, [:current_user, :user])
+
+    if current_user.id == user.id do
+      conn
+    else
+      conn |> redirect(to: Routes.page_path(conn, :index))
+    end
   end
 end

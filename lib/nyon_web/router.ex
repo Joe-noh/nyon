@@ -33,7 +33,7 @@ defmodule NyonWeb.Router do
 
       get "/", PageController, :index
       resources "/users", UserController, only: [:index, :show, :edit, :update, :delete] do
-        resources "/posts", PostController
+        resources "/posts", PostController, only: [:new, :create, :delete]
       end
     end
   end
