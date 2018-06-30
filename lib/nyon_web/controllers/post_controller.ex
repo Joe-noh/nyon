@@ -51,12 +51,15 @@ defmodule NyonWeb.PostController do
   end
 
   defp correct_user(conn, _opts) do
-    %{current_user: current_user, user: user} = Map.take(conn.assigns, [:current_user, :user])
+    %{current_user: current_user, user: user, post: post} = conn.assigns
+      |> Map.take([:current_user, :user, :post])
 
-    if current_user.id == user.id do
+    if current_user.id == user.id and current_user.id == post.user_id do
       conn
     else
-      conn |> redirect(to: Routes.page_path(conn, :index))
+      conn
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt()
     end
   end
 end
