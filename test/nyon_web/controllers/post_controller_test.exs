@@ -22,8 +22,11 @@ defmodule NyonWeb.PostControllerTest do
     setup [:login]
 
     test "renders form", %{conn: conn, user: user} do
-      conn = get conn, Routes.user_post_path(conn, :new, user)
-      assert html_response(conn, 200) =~ "New Post"
+      html = conn
+        |> get(Routes.user_post_path(conn, :new, user))
+        |> html_response(200)
+
+      html =~ "New Post"
     end
   end
 
@@ -31,14 +34,17 @@ defmodule NyonWeb.PostControllerTest do
     setup [:login]
 
     test "redirects to show when data is valid", %{conn: conn, user: user} do
-      conn = post conn, Routes.user_post_path(conn, :create, user), post: @post_attrs
+      conn = post(conn, Routes.user_post_path(conn, :create, user), post: @post_attrs)
 
       assert redirected_to(conn) == Routes.page_path(conn, :index)
     end
 
     test "renders errors when data is invalid", %{conn: conn, user: user} do
-      conn = post conn, Routes.user_post_path(conn, :create, user), post: %{body: ""}
-      assert html_response(conn, 200) =~ "New Post"
+      html = conn
+        |> post(Routes.user_post_path(conn, :create, user), post: %{body: ""})
+        |> html_response(200)
+
+      html =~ "New Post"
     end
   end
 
@@ -46,7 +52,8 @@ defmodule NyonWeb.PostControllerTest do
     setup [:login, :create_post]
 
     test "deletes chosen post", %{conn: conn, user: user, post: post} do
-      conn = delete conn, Routes.user_post_path(conn, :delete, user, post)
+      conn = delete(conn, Routes.user_post_path(conn, :delete, user, post))
+
       assert redirected_to(conn) == Routes.page_path(conn, :index)
     end
   end
