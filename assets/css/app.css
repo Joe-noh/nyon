@@ -1,3 +1,5 @@
-/* This file is for your main application css. */
+@import "./base/base";
 
-@import "./phoenix.css";
+@import "./layouts/layouts";
+
+@import "./components/button";
