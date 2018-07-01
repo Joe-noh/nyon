@@ -1,3 +1,7 @@
 :root {
-  --backgroundColor: skyblue;
+  --orange: #ff5312;
+  --red: #f22929;
+  --black: #333;
+  --gray: #888;
+  --white: #fff;
 }
