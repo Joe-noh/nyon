@@ -3,8 +3,8 @@ defmodule NyonWeb.PostControllerTest do
 
   alias Nyon.{Notes, Accounts}
 
-  @post_attrs %{body: "Hello World"}
-  @user_attrs %{email: "hello@example.com", name: "john_doe"}
+  @post_attrs Factory.params_for(:post)
+  @user_attrs Factory.params_for(:user)
 
   defp login(%{conn: conn}) do
     {:ok, user} = Accounts.create_user(@user_attrs)

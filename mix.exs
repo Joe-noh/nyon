@@ -43,6 +43,9 @@ defmodule Nyon.MixProject do
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
       {:bamboo, "~> 1.0"},
+      {:mix_test_watch, "~> 0.6", only: :dev, runtime: false},
+      {:faker, "~> 0.10", only: :test},
+      {:nanoid, "~> 1.0.1", only: :test},
     ]
   end
 

@@ -4,7 +4,7 @@ defmodule Nyon.Accounts.UserTest do
   alias Nyon.Accounts.User
 
   describe "changeset" do
-    @attrs %{name: "john_doe", email: "hello@example.com"}
+    @attrs Factory.params_for(:user)
 
     test "downcases email" do
       changeset = User.changeset(%User{}, Map.put(@attrs, :email, "HELLO@EXAMPLE.COM"))

@@ -1,7 +1,7 @@
 defmodule NyonWeb.MagicLinkControllerTest do
   use NyonWeb.ConnCase
 
-  @attrs %{email: "hello@example.com"}
+  @attrs Factory.params_for(:magic_link)
 
   describe "new action" do
     test "renders form", %{conn: conn} do

@@ -4,7 +4,7 @@ defmodule Nyon.Accounts.MagicLinkTest do
   alias Nyon.Accounts.MagicLink
 
   describe "changeset" do
-    @attrs %{email: "hello@example.com"}
+    @attrs Factory.params_for(:magic_link)
 
     test "generates token" do
       changeset = MagicLink.changeset(%MagicLink{}, @attrs)

@@ -3,7 +3,7 @@ defmodule NyonWeb.UserControllerTest do
 
   alias Nyon.Accounts
 
-  @attrs %{email: "hello@example.com", name: "john_doe"}
+  @attrs Factory.params_for(:user)
 
   defp create_magic_link(_) do
     {:ok, magic_link} = Accounts.create_magic_link(%{email: @attrs.email})
