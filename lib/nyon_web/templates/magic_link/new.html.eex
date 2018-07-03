@@ -12,6 +12,6 @@
   <%= error_tag f, :email %>
 
   <div>
-    <%= submit "Send Magic Link" %>
+    <%= submit "Send Magic Link", class: "c-button c-button--red" %>
   </div>
 <% end %>
