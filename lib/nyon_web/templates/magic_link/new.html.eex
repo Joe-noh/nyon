@@ -1,17 +1,11 @@
-<h2>New Magic link</h2>
+<div class="l-full-height theme-orange">
+  <div class="l-container">
+    <h2 class="c-page-title theme-text-white">New Magic link</h2>
 
-<%= form_for @changeset, Routes.magic_link_path(@conn, :create), fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
-    </div>
-  <% end %>
+    <%= form_for @changeset, Routes.magic_link_path(@conn, :create), [class: "c-login-form"], fn f -> %>
+      <%= text_input f, :email, placeholder: "Email", class: "c-login-form__input c-input" %>
 
-  <%= label f, :email %>
-  <%= text_input f, :email %>
-  <%= error_tag f, :email %>
-
-  <div>
-    <%= submit "Send Magic Link", class: "c-button theme-red" %>
+      <%= submit "Send Magic Link", class: "c-login-form__button c-button theme-red" %>
+    <% end %>
   </div>
-<% end %>
+</div>

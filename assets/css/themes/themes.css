@@ -14,3 +14,7 @@
   background-color: var(--white);
   color: var(--black);
 }
+
+.theme-text-white {
+  color: var(--white);
+}
