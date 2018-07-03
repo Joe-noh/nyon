@@ -9,8 +9,3 @@
   align-items: center;
   justify-content: center;
 }
-
-.c-button--red {
-  background-color: var(--red);
-  color: var(--white);
-}

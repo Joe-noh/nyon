@@ -1,0 +1,16 @@
+@import "../variables/colors";
+
+.theme-red {
+  background-color: var(--red);
+  color: var(--white);
+}
+
+.theme-orange {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.theme-white {
+  background-color: var(--white);
+  color: var(--black);
+}
