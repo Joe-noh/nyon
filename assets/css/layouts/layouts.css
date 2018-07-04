@@ -1,5 +1,11 @@
+.l-full-height {
+  height: 100vh;
+  width: 100%;
+}
+
 .l-container {
-  padding: 0 10px;
+  padding: 0 16px;
   margin: 0 auto;
+  height: 100%;
   max-width: 960px;
 }

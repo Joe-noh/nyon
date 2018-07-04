@@ -9,7 +9,7 @@ defmodule NyonWeb.MagicLinkControllerTest do
         |> get(Routes.login_path(conn, :new))
         |> html_response(200)
 
-      assert html =~ "New Magic link"
+      assert html =~ "Send Magic Link"
     end
   end
 
@@ -35,7 +35,7 @@ defmodule NyonWeb.MagicLinkControllerTest do
         |> post(Routes.magic_link_path(conn, :create), magic_link: %{})
         |> html_response(200)
 
-      assert html =~ "New Magic link"
+      assert html =~ "Send Magic Link"
     end
   end
 end
