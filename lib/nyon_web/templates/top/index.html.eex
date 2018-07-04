@@ -1,4 +1,4 @@
-<%= render NyonWeb.SharedView, "header.html" %>
+<%= render NyonWeb.SharedView, "header.html", user: @current_user %>
 
 <div class="c-post-list l-container">
   <%= for post <- @posts do %>
