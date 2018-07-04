@@ -1,6 +1,6 @@
 <%= render NyonWeb.SharedView, "header.html" %>
 
-<div class="c-post-list">
+<div class="c-post-list l-container">
   <%= for post <- @posts do %>
     <%= render NyonWeb.SharedView, "post.html", post: post %>
   <% end %>

@@ -1,13 +1,13 @@
-<div class="c-post">
+<div class="c-post theme-white">
   <div class="c-post__meta">
     <div class="c-post__meta__avatar">
-      <img class="c-post__meta__avatar__image" alt="<%= @post.user.name %>">
+      <img class="c-post__meta__avatar__image" alt="<%= @post.user.name %>" src="<%= Helpers.gravatar_url(@post.user.email) %>">
     </div>
     <span class="c-post__meta__name">
       <%= @post.user.name %>
     </span>
     <time class="c-post__meta__time">
-      <%= TimeHelper.datetime(@post.inserted_at) %>
+      <%= Helpers.datetime(@post.inserted_at) %>
     </time>
   </div>
   <p class="c-post__body"><%= @post.body %></p>

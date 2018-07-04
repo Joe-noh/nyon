@@ -4,8 +4,7 @@
 }
 
 .l-container {
-  padding: 0 16px;
+  padding: 0 8px;
   margin: 0 auto;
-  height: 100%;
-  max-width: 960px;
+  max-width: 640px;
 }

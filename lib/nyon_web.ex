@@ -42,7 +42,7 @@ defmodule NyonWeb do
       import NyonWeb.ErrorHelpers
       import NyonWeb.Gettext
       alias NyonWeb.Router.Helpers, as: Routes
-      alias NyonWeb.TimeHelper
+      alias NyonWeb.ViewHelpers, as: Helpers
     end
   end
 
