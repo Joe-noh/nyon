@@ -1,3 +1,13 @@
-<h2>Check your email!</h2>
+<div class="l-full-height theme-orange">
+  <div class="l-container">
+    <h2 class="c-page-title theme-text-white">Send Magic Link</h2>
 
-<p>We sent a magic link to you.</p>
+    <div class="c-sent-magic-link">
+      <p class="c-sent-magic-link__message">Check Your Email</p>
+      <p class="c-sent-magic-link__note">
+        Magic link was sent to you.
+        <a href="<%= Routes.login_path(@conn, :new) %>" class="c-link">Re-send?</a>
+      </p>
+    </div>
+  </div>
+</div>

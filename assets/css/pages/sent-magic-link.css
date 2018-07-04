@@ -1,0 +1,16 @@
+.c-sent-magic-link {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.c-sent-magic-link__message {
+  margin-bottom: 14px;
+  font-size: 24px;
+}
+
+.c-sent-magic-link__note {
+  font-size: 14px;
+}
