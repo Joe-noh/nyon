@@ -1,4 +1,4 @@
-.c-sent-magic-link {
+.sent-magic-link {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -6,11 +6,11 @@
   height: 100vh;
 }
 
-.c-sent-magic-link__message {
+.sent-magic-link__message {
   margin-bottom: 14px;
   font-size: 24px;
 }
 
-.c-sent-magic-link__note {
+.sent-magic-link__note {
   font-size: 14px;
 }

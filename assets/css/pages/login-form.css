@@ -1,4 +1,4 @@
-.c-login-form {
+.login-form {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -6,13 +6,13 @@
   height: 100vh;
 }
 
-.c-login-form__input {
+.login-form__input {
   margin-bottom: 36px;
   width: 70%;
   max-width: 240px;
 }
 
-.c-login-form__button {
+.login-form__button {
   width: 70%;
   max-width: 240px;
 }

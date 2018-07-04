@@ -2,10 +2,10 @@
   <div class="l-container">
     <h2 class="c-page-title theme-text-white">Send Magic Link</h2>
 
-    <%= form_for @changeset, Routes.magic_link_path(@conn, :create), [class: "c-login-form"], fn f -> %>
-      <%= text_input f, :email, placeholder: "Email", class: "c-login-form__input c-input" %>
+    <%= form_for @changeset, Routes.magic_link_path(@conn, :create), [class: "login-form"], fn f -> %>
+      <%= text_input f, :email, placeholder: "Email", class: "login-form__input c-input" %>
 
-      <%= submit "Send Magic Link", class: "c-login-form__button c-button theme-red" %>
+      <%= submit "Send Magic Link", class: "login-form__button c-button theme-red" %>
     <% end %>
   </div>
 </div>
