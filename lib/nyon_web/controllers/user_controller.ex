@@ -15,7 +15,7 @@ defmodule NyonWeb.UserController do
             conn
             |> put_session(:user_id, user.id)
             |> configure_session(renew: true)
-            |> redirect(to: Routes.user_path(conn, :show, user))
+            |> redirect(to: Routes.top_path(conn, :index))
           {:error, :not_found} ->
             changeset = Accounts.change_user(%User{})
             render(conn, "new.html", changeset: changeset, magic_link: magic_link)
@@ -34,7 +34,7 @@ defmodule NyonWeb.UserController do
       |> put_session(:user_id, user.id)
       |> configure_session(renew: true)
       |> put_flash(:info, "User created successfully.")
-      |> redirect(to: Routes.user_path(conn, :show, user))
+      |> redirect(to: Routes.top_path(conn, :index))
     else
       {nil, _map} ->
         conn
