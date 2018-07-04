@@ -100,7 +100,7 @@ defmodule NyonWeb.UserController do
     if current_user.id == user.id do
       conn
     else
-      conn |> redirect(to: Routes.page_path(conn, :index))
+      conn |> redirect(to: Routes.top_path(conn, :index))
     end
   end
 end

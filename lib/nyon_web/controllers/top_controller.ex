@@ -1,4 +1,4 @@
-defmodule NyonWeb.PageController do
+defmodule NyonWeb.TopController do
   use NyonWeb, :controller
 
   def index(conn, _params) do
