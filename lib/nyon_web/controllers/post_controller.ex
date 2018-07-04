@@ -20,7 +20,7 @@ defmodule NyonWeb.PostController do
       {:ok, _post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: Routes.top_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -32,7 +32,7 @@ defmodule NyonWeb.PostController do
 
     conn
     |> put_flash(:info, "Post deleted successfully.")
-    |> redirect(to: Routes.page_path(conn, :index))
+    |> redirect(to: Routes.top_path(conn, :index))
   end
 
   defp assign_user(conn, _opts) do
@@ -53,7 +53,7 @@ defmodule NyonWeb.PostController do
       conn
     else
       conn
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> redirect(to: Routes.top_path(conn, :index))
       |> halt()
     end
   end

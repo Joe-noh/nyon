@@ -8,6 +8,13 @@ defmodule Nyon.Notes do
 
   alias Nyon.Notes.Post
 
+  def list_posts do
+    Post
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+    |> Repo.preload(:user)
+  end
+
   def get_post!(id), do: Repo.get!(Post, id)
 
   def create_post(user, attrs \\ %{}) do

@@ -37,7 +37,7 @@ defmodule NyonWeb.PostControllerTest do
     test "redirects to show when data is valid", %{conn: conn, user: user} do
       conn = post(conn, Routes.user_post_path(conn, :create, user), post: @post_attrs)
 
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.top_path(conn, :index)
     end
 
     test "renders errors when data is invalid", %{conn: conn, user: user} do
@@ -55,7 +55,7 @@ defmodule NyonWeb.PostControllerTest do
     test "deletes chosen post", %{conn: conn, user: user, post: post} do
       conn = delete(conn, Routes.user_post_path(conn, :delete, user, post))
 
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == Routes.top_path(conn, :index)
     end
   end
 end

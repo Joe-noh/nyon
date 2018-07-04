@@ -20,5 +20,6 @@
 }
 
 .c-header__avatar__image {
+  border-radius: 50%;
   background-color: var(--gray);
 }
