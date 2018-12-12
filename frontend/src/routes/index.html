@@ -1,46 +1,26 @@
-<svelte:head>
-	<title>Sapper project template</title>
-</svelte:head>
+<section class="top">
+  <h1><Logo /></h1>
+  <Button>Login with Twitter</Button>
+</section>
 
-<h1>Great success!</h1>
-
-<figure>
-	<img alt='Borat' src='great-success.png'>
-	<figcaption>HIGH FIVE!</figcaption>
-</figure>
-
-<p><strong>Try editing this file (routes/index.html) to test hot module reloading.</strong></p>
+<script>
+  export default {
+    components: {
+      Logo: '../components/Logo.html',
+      Button: '../components/Button.html',
+    },
+  };
+</script>
 
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
-
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
+  .top {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    width: 100vw;
+    padding: 40% 0;
+    background: linear-gradient(0deg, var(--red), var(--orange) 50%);
+  }
 </style>
