@@ -25,13 +25,13 @@ defmodule NyonWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Nyon.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Nyon.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

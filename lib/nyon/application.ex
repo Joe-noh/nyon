@@ -11,7 +11,7 @@ defmodule Nyon.Application do
       # Start the Ecto repository
       Nyon.Repo,
       # Start the endpoint when the application starts
-      NyonWeb.Endpoint,
+      NyonWeb.Endpoint
       # Starts a worker by calling: Nyon.Worker.start_link(arg)
       # {Nyon.Worker, arg},
     ]

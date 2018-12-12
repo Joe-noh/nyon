@@ -21,21 +21,18 @@ defmodule NyonWeb.ConnCase do
       use Phoenix.ConnTest
       alias NyonWeb.Router.Helpers, as: Routes
 
-      alias NyonWeb.ConnCaseHelpers, as: Helpers
-      alias Nyon.Factory
-
       # The default endpoint for testing
       @endpoint NyonWeb.Endpoint
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Nyon.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Nyon.Repo, {:shared, self()})
     end
+
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
-
 end

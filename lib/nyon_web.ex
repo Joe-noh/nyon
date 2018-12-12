@@ -24,25 +24,21 @@ defmodule NyonWeb do
       import Plug.Conn
       import NyonWeb.Gettext
       alias NyonWeb.Router.Helpers, as: Routes
-      alias NyonWeb.ErrorView
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/nyon_web/templates",
-                        namespace: NyonWeb
+      use Phoenix.View,
+        root: "lib/nyon_web/templates",
+        namespace: NyonWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
 
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
-
       import NyonWeb.ErrorHelpers
       import NyonWeb.Gettext
       alias NyonWeb.Router.Helpers, as: Routes
-      alias NyonWeb.ViewHelpers, as: Helpers
     end
   end
 

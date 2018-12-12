@@ -1,5 +1,0 @@
-<header class="c-header">
-  <div class="c-header__avatar">
-    <img class="c-header__avatar__image" src="<%= Helpers.gravatar_url(@user.email) %>">
-  </div>
-</header>
