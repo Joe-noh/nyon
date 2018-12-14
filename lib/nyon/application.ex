@@ -6,9 +6,6 @@ defmodule Nyon.Application do
   use Application
 
   def start(_type, _args) do
-    # Not Elixir Way!
-    Dotenv.load()
-
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository

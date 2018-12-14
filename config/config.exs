@@ -7,6 +7,15 @@
 # General application configuration
 use Mix.Config
 
+with {:ok, content} <- File.read(".env") do
+  content
+  |> String.split("\n", trim: true)
+  |> Enum.map(&String.split(&1, "="))
+  |> Enum.each(fn [key, val] ->
+    System.put_env(key, val)
+  end)
+end
+
 config :nyon,
   ecto_repos: [Nyon.Repo],
   generators: [binary_id: true]
@@ -14,9 +23,13 @@ config :nyon,
 # Configures the endpoint
 config :nyon, NyonWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "MvN08jd9TlB7FctlbMPEGPoYp6mxQZnWt4M2h2QrAtsRRSBM0w1ZqZjyMndmLjO0",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: NyonWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: Nyon.PubSub, adapter: Phoenix.PubSub.PG2]
+
+config :nyon, :twitter,
+  consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
+  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET")
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -11,13 +11,18 @@ defmodule Nyon.Identities do
     case TwitterAccount.find_by_twitter_id(twitter_id) do
       nil ->
         do_create_user(params)
+
       account ->
-        user = account |> Ecto.assoc(:user) |> Repo.one
+        user = account |> Ecto.assoc(:user) |> Repo.one()
         {:ok, user}
     end
   end
 
-  defp do_create_user(%{"name" => name, "display_name" => display_name, "twitter_id" => twitter_id}) do
+  defp do_create_user(%{
+         "name" => name,
+         "display_name" => display_name,
+         "twitter_id" => twitter_id
+       }) do
     Multi.new()
     |> Multi.insert(:user, User.changeset(%User{}, %{name: name, display_name: display_name}))
     |> Multi.run(:twitter_account, fn repo, %{user: user} ->
