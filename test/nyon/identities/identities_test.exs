@@ -9,12 +9,18 @@ defmodule Nyon.IdentitiesTest do
   describe "create_user/1" do
     test "insert user and twitter account" do
       {:ok, user} = Identities.create_user(@params)
-      twitter_account = user |> Ecto.assoc(:twitter_account) |> Repo.one
+      twitter_account = user |> Ecto.assoc(:twitter_account) |> Repo.one()
 
       assert user.name == @params["name"]
       assert user.display_name == @params["display_name"]
       assert twitter_account.twitter_id == @params["twitter_id"]
       assert user.id == twitter_account.user_id
+    end
+
+    test "returns existing user" do
+      {:ok, %{id: user_id}} = Identities.create_user(@params)
+
+      assert {:ok, %{id: ^user_id}} = Identities.create_user(@params)
     end
   end
 
@@ -36,7 +42,7 @@ defmodule Nyon.IdentitiesTest do
       assert {:ok, _user} = Identities.delete_user(user)
 
       assert Repo.get(User, user.id) == nil
-      assert user |> Ecto.assoc(:twitter_account) |> Repo.one == nil
+      assert user |> Ecto.assoc(:twitter_account) |> Repo.one() == nil
     end
   end
 

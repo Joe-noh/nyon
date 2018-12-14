@@ -14,9 +14,13 @@ defmodule NyonWeb.UserControllerTest do
            )
 
   @post_params %{
-    "name" => "john_doe",
-    "display_name" => "John Doe",
-    "twitter_id" => "123456789"
+    "user" => %{
+      "name" => "john_doe",
+      "display_name" => "John Doe",
+      "twitter_id" => "123456789"
+    },
+    "token" => "twitter_token",
+    "secret" => "twitter_token_secret"
   }
 
   setup %{conn: conn} do
@@ -27,7 +31,7 @@ defmodule NyonWeb.UserControllerTest do
     test "renders user and twitter account", %{conn: conn} do
       json =
         conn
-        |> post(Routes.user_path(conn, :create), user: @post_params)
+        |> post(Routes.user_path(conn, :create), @post_params)
         |> json_response(201)
         |> Map.get("data")
 
@@ -37,7 +41,7 @@ defmodule NyonWeb.UserControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       json =
         conn
-        |> post(Routes.user_path(conn, :create), user: %{@post_params | "name" => ""})
+        |> post(Routes.user_path(conn, :create), put_in(@post_params, ["user", "name"], ""))
         |> json_response(422)
 
       assert Map.has_key?(json, "errors")
@@ -78,7 +82,11 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   defp create_user(_) do
-    {:ok, user} = Identities.create_user(@post_params)
+    {:ok, user} =
+      @post_params
+      |> Map.get("user")
+      |> Identities.create_user()
+
     %{user: user}
   end
 end
