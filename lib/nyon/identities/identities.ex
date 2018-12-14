@@ -4,9 +4,7 @@ defmodule Nyon.Identities do
   alias Nyon.Identities.{User, TwitterAccount}
 
   def get_user!(id) do
-    User
-    |> Repo.get!(id)
-    |> Repo.preload(:twitter_account)
+    User |> Repo.get!(id)
   end
 
   def create_user(%{"name" => name, "display_name" => display_name, "twitter_id" => twitter_id}) do
@@ -19,6 +17,13 @@ defmodule Nyon.Identities do
       |> repo.insert()
     end)
     |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} ->
+        {:ok, user}
+
+      {:error, _failed, changeset, _changes} ->
+        {:error, changeset}
+    end
   end
 
   def update_user(%User{} = user, %{"display_name" => display_name}) do

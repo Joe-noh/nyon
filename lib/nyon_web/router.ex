@@ -7,5 +7,7 @@ defmodule NyonWeb.Router do
 
   scope "/api", NyonWeb do
     pipe_through :api
+
+    resources "/users", UserController, only: [:show, :create, :update, :delete]
   end
 end
