@@ -5,17 +5,8 @@ defmodule NyonWeb.UserController do
 
   action_fallback NyonWeb.FallbackController
 
-  def create(conn, %{"user" => user_params, "token" => token, "secret" => secret}) do
-    twitter_id = Map.get(user_params, "twitter_id")
-    twitter_module = Application.get_env(:nyon, :twitter_module, Nyon.Twitter)
-
-    with %{"id_str" => ^twitter_id} <- twitter_module.fetch_profile!(token, secret),
-         {:ok, user} <- Identities.create_user(user_params) do
-      conn
-      |> put_status(:created)
-      |> render("show.json", user: user)
-    end
-  end
+  plug NyonWeb.RequireLoginPlug
+  plug :restrict_access when action in [:update, :delete]
 
   def show(conn, %{"id" => id}) do
     user = Identities.get_user!(id)
@@ -36,5 +27,17 @@ defmodule NyonWeb.UserController do
     with {:ok, _user} <- Identities.delete_user(user) do
       conn |> send_resp(:no_content, "")
     end
+  end
+
+  defp restrict_access(conn, _opts) do
+    restrict_access(conn, conn.assigns.current_user, conn.params)
+  end
+
+  defp restrict_access(conn, %{id: user_id}, %{"id" => user_id}) do
+    conn
+  end
+
+  defp restrict_access(conn, _current_user, _params) do
+    conn |> Plug.Conn.send_resp(:forbidden, "") |> Plug.Conn.halt()
   end
 end

@@ -1,7 +1,6 @@
 defmodule Nyon.Identities.TwitterAccount do
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Nyon.Identities.User
 
@@ -23,11 +22,5 @@ defmodule Nyon.Identities.TwitterAccount do
     |> validate_required([:twitter_id])
     |> unique_constraint(:twitter_id)
     |> assoc_constraint(:user, name: :twitter_accounts_user_id_fkey)
-  end
-
-  def find_by_twitter_id(twitter_id) do
-    __MODULE__
-    |> where(twitter_id: ^twitter_id)
-    |> Nyon.Repo.one()
   end
 end

@@ -1,6 +1,6 @@
 <section class="top">
   <h1><Logo /></h1>
-  <Button>Login with Twitter</Button>
+  <Button href="/twitter/login">Login with Twitter</Button>
 </section>
 
 <script>
@@ -8,6 +8,11 @@
     components: {
       Logo: '../components/Logo.html',
       Button: '../components/Button.html',
+    },
+    methods: {
+      loginWithTwitter() {
+        location.href = "/twitter/login";
+      },
     },
   };
 </script>

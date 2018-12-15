@@ -1,4 +1,18 @@
-<button class="button"><slot /></button>
+{#if href}
+  <a href={href}><button type="{nativeType}" class="button"><slot /></button></a>
+{:else}
+  <button type="{nativeType}" class="button"><slot /></button>
+{/if}
+
+<script>
+  export default {
+    data() {
+      return {
+        href: null,
+      };
+    },
+  }
+</script>
 
 <style>
   .button {
@@ -9,5 +23,6 @@
     color: var(--orange);
     background-color: var(--white);
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 15%);
+    cursor: pointer;
   }
 </style>

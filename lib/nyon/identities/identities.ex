@@ -1,4 +1,6 @@
 defmodule Nyon.Identities do
+  require Ecto.Query
+
   alias Ecto.Multi
   alias Nyon.Repo
   alias Nyon.Identities.{User, TwitterAccount}
@@ -7,8 +9,15 @@ defmodule Nyon.Identities do
     User |> Repo.get!(id)
   end
 
+  def get_twitter_account(twitter_id) do
+    TwitterAccount
+    |> Ecto.Query.where(twitter_id: ^twitter_id)
+    |> Repo.one()
+    |> Repo.preload(:user)
+  end
+
   def create_user(params = %{"twitter_id" => twitter_id}) do
-    case TwitterAccount.find_by_twitter_id(twitter_id) do
+    case get_twitter_account(twitter_id) do
       nil ->
         do_create_user(params)
 
@@ -18,11 +27,9 @@ defmodule Nyon.Identities do
     end
   end
 
-  defp do_create_user(%{
-         "name" => name,
-         "display_name" => display_name,
-         "twitter_id" => twitter_id
-       }) do
+  defp do_create_user(params) do
+    %{"name" => name, "display_name" => display_name, "twitter_id" => twitter_id} = params
+
     Multi.new()
     |> Multi.insert(:user, User.changeset(%User{}, %{name: name, display_name: display_name}))
     |> Multi.run(:twitter_account, fn repo, %{user: user} ->

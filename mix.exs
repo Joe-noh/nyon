@@ -42,7 +42,8 @@ defmodule Nyon.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:extwitter, "~> 0.8"},
-      {:dotenv, "~> 3.0.0"},
+      {:corsica, "~> 1.1"},
+      {:joken, "2.0.0-rc3"},
       {:ex_unit_assert_match, "~> 0.3", only: :test}
     ]
   end

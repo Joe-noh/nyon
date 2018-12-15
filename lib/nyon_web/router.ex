@@ -3,11 +3,13 @@ defmodule NyonWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug NyonWeb.CurrentUserPlug
   end
 
   scope "/api", NyonWeb do
     pipe_through :api
 
-    resources "/users", UserController, only: [:show, :create, :update, :delete]
+    resources "/users", UserController, only: [:show, :update, :delete]
+    resources "/sessions", SessionController, only: [:create]
   end
 end

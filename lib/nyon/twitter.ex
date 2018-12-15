@@ -1,4 +1,4 @@
-defmodule Nyon.Identities.Twitter do
+defmodule Nyon.Twitter do
   def fetch_profile!(access_token, access_token_secret) do
     [consumer_key: consumer_key, consumer_secret: consumer_secret] =
       Application.get_env(:nyon, :twitter)

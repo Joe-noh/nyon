@@ -13,45 +13,14 @@ defmodule NyonWeb.UserControllerTest do
              exact_same_keys: true
            )
 
-  @post_params %{
-    "user" => %{
-      "name" => "john_doe",
-      "display_name" => "John Doe",
-      "twitter_id" => "123456789"
-    },
-    "token" => "twitter_token",
-    "secret" => "twitter_token_secret"
-  }
-
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  describe "POST /users" do
-    test "renders user and twitter account", %{conn: conn} do
-      json =
-        conn
-        |> post(Routes.user_path(conn, :create), @post_params)
-        |> json_response(201)
-        |> Map.get("data")
-
-      Match.assert(@pattern, json)
-    end
-
-    test "renders errors when data is invalid", %{conn: conn} do
-      json =
-        conn
-        |> post(Routes.user_path(conn, :create), put_in(@post_params, ["user", "name"], ""))
-        |> json_response(422)
-
-      assert Map.has_key?(json, "errors")
-    end
-  end
-
   describe "PUT /users/:id" do
-    setup [:create_user]
+    setup [:create_user, :put_auth_header]
 
-    test "renders user and twitter account", %{conn: conn, user: user} do
+    test "updates and renders the user", %{conn: conn, user: user} do
       json =
         conn
         |> put(Routes.user_path(conn, :update, user), user: %{display_name: "john"})
@@ -72,7 +41,7 @@ defmodule NyonWeb.UserControllerTest do
   end
 
   describe "DELETE /users/:id" do
-    setup [:create_user]
+    setup [:create_user, :put_auth_header]
 
     test "deletes chosen user", %{conn: conn, user: user} do
       conn
@@ -83,10 +52,19 @@ defmodule NyonWeb.UserControllerTest do
 
   defp create_user(_) do
     {:ok, user} =
-      @post_params
-      |> Map.get("user")
-      |> Identities.create_user()
+      Identities.create_user(%{
+        "name" => "john_doe",
+        "display_name" => "John Doe",
+        "twitter_id" => "123456789"
+      })
 
     %{user: user}
+  end
+
+  defp put_auth_header(%{conn: conn, user: user}) do
+    token = NyonWeb.Token.generate_and_sign!(%{"user_id" => user.id})
+    conn = conn |> put_req_header("authorization", "Bearer #{token}")
+
+    %{conn: conn}
   end
 end
