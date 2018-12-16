@@ -9,6 +9,8 @@ config :nyon, NyonWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :nyon, :twitter_module, Nyon.TwitterMock
+
 # Configure your database
 config :nyon, Nyon.Repo,
   username: "postgres",

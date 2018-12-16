@@ -193,6 +193,10 @@ input, button, select, optgroup, textarea {
   line-height: inherit;
 }
 
+input:focus, button:focus, select:focus, optgroup:focus, textarea:focus {
+  outline: 0;
+}
+
 button, input {
   overflow: visible;
 }

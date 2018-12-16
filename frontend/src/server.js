@@ -1,17 +1,28 @@
-import sirv from 'sirv';
-import polka from 'polka';
+import dotenv from 'dotenv';
+dotenv.load();
+
+import express from 'express';
 import compression from 'compression';
-import * as sapper from '../__sapper__/server.js';
+import cookieSession from 'cookie-session';
+import passport from 'passport';
+import requireLogin from './middlewares/require-login';
+import sapperStore from './middlewares/sapper-store';
 
-const { PORT, NODE_ENV } = process.env;
-const dev = NODE_ENV === 'development';
+const app = express();
 
-polka() // You can also use Express
-	.use(
-		compression({ threshold: 0 }),
-		sirv('static', { dev }),
-		sapper.middleware()
-	)
-	.listen(PORT, err => {
-		if (err) console.log('error', err);
-	});
+app.use(compression({ threshold: 0 }));
+app.use(express.static('static'));
+
+app.use(cookieSession({
+  secret: process.env.SECRET_KEY_BASE,
+  maxAge: 90 * 24 * 60 * 60 * 1000,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(requireLogin());
+app.use(sapperStore());
+
+app.listen(process.env.PORT, err => {
+  if (err) console.log('error', err);
+});

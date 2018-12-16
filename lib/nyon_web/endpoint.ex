@@ -32,6 +32,11 @@ defmodule NyonWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
+  plug Corsica,
+    max_age: 600,
+    origins: "*",
+    allow_headers: ~w[accept content-type authorization origin]
+
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
