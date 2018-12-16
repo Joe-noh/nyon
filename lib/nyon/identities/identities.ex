@@ -27,11 +27,21 @@ defmodule Nyon.Identities do
     end
   end
 
-  defp do_create_user(params) do
-    %{"name" => name, "display_name" => display_name, "twitter_id" => twitter_id} = params
-
+  defp do_create_user(%{
+         "name" => name,
+         "display_name" => display_name,
+         "twitter_id" => twitter_id,
+         "avatar_url" => avatar_url
+       }) do
     Multi.new()
-    |> Multi.insert(:user, User.changeset(%User{}, %{name: name, display_name: display_name}))
+    |> Multi.insert(
+      :user,
+      User.changeset(%User{}, %{
+        name: name,
+        display_name: display_name,
+        avatar_url: avatar_url
+      })
+    )
     |> Multi.run(:twitter_account, fn repo, %{user: user} ->
       user
       |> Ecto.build_assoc(:twitter_account)

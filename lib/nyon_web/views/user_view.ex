@@ -14,7 +14,8 @@ defmodule NyonWeb.UserView do
     %{
       id: user.id,
       name: user.name,
-      display_name: user.display_name
+      display_name: user.display_name,
+      avatar_url: String.replace(user.avatar_url, "_normal", "")
     }
   end
 end

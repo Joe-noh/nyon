@@ -6,6 +6,7 @@ defmodule Nyon.Repo.Migrations.CreateUsers do
       add :id, :binary_id, primary_key: true
       add :name, :string
       add :display_name, :string
+      add :avatar_url, :string
 
       timestamps()
     end

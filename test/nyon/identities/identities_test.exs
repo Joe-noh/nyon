@@ -4,7 +4,12 @@ defmodule Nyon.IdentitiesTest do
   alias Nyon.Identities
   alias Nyon.Identities.User
 
-  @params %{"name" => "john_doe", "display_name" => "John Doe", "twitter_id" => "123456789"}
+  @params %{
+    "name" => "john_doe",
+    "display_name" => "John Doe",
+    "avatar_url" => "https://example.com/img.png",
+    "twitter_id" => "123456789"
+  }
 
   describe "create_user/1" do
     test "insert user and twitter account" do
