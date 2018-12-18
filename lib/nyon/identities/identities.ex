@@ -30,8 +30,7 @@ defmodule Nyon.Identities do
   defp do_create_user(%{
          "name" => name,
          "display_name" => display_name,
-         "twitter_id" => twitter_id,
-         "avatar_url" => avatar_url
+         "twitter_id" => twitter_id
        }) do
     Multi.new()
     |> Multi.insert(
@@ -39,7 +38,7 @@ defmodule Nyon.Identities do
       User.changeset(%User{}, %{
         name: name,
         display_name: display_name,
-        avatar_url: avatar_url
+        avatar_url: random_avatar_url(name)
       })
     )
     |> Multi.run(:twitter_account, fn repo, %{user: user} ->
@@ -66,5 +65,11 @@ defmodule Nyon.Identities do
 
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  defp random_avatar_url(name) do
+    key = :crypto.hash(:md5, name) |> Base.encode16(case: :lower)
+    colors = ~w[FD0202 FF5312 FFDCCC] |> Enum.map(&("colors=" <> &1)) |> Enum.join("&")
+    "https://www.tinygraphs.com/squares/#{key}?#{colors}&size=200&fmt=jpg"
   end
 end

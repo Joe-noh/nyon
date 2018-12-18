@@ -56,7 +56,6 @@ defmodule NyonWeb.UserControllerTest do
       Identities.create_user(%{
         "name" => "john_doe",
         "display_name" => "John Doe",
-        "avatar_url" => "https://example.com/img.png",
         "twitter_id" => "123456789"
       })
 

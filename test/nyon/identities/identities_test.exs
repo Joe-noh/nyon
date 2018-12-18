@@ -7,7 +7,6 @@ defmodule Nyon.IdentitiesTest do
   @params %{
     "name" => "john_doe",
     "display_name" => "John Doe",
-    "avatar_url" => "https://example.com/img.png",
     "twitter_id" => "123456789"
   }
 
@@ -18,6 +17,7 @@ defmodule Nyon.IdentitiesTest do
 
       assert user.name == @params["name"]
       assert user.display_name == @params["display_name"]
+      assert user.avatar_url
       assert twitter_account.twitter_id == @params["twitter_id"]
       assert user.id == twitter_account.user_id
     end

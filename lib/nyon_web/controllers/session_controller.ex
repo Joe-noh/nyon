@@ -11,8 +11,7 @@ defmodule NyonWeb.SessionController do
     %Nyon.Twitter{
       id_str: twitter_id,
       screen_name: name,
-      name: display_name,
-      profile_image_url_https: avatar_url
+      name: display_name
     } = twitter_module.fetch_profile!(token, secret)
 
     case Identities.get_twitter_account(twitter_id) do
@@ -20,7 +19,6 @@ defmodule NyonWeb.SessionController do
         with attrs = %{
                "name" => name,
                "display_name" => display_name,
-               "avatar_url" => avatar_url,
                "twitter_id" => twitter_id
              },
              {:ok, user} <- Identities.create_user(attrs) do

@@ -6,8 +6,7 @@ defmodule Nyon.TwitterMock do
     %Nyon.Twitter{
       id_str: "123456789",
       screen_name: "john_doe",
-      name: "John Doe",
-      profile_image_url_https: "https://example.com/img.png"
+      name: "John Doe"
     }
   end
 end

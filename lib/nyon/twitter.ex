@@ -1,10 +1,7 @@
 defmodule Nyon.Twitter do
-  defstruct [
-    id_str: "",
-    screen_name: "",
-    name: "",
-    profile_image_url_https: ""
-  ]
+  defstruct id_str: "",
+            screen_name: "",
+            name: ""
 
   def fetch_profile!(access_token, access_token_secret) do
     [consumer_key: consumer_key, consumer_secret: consumer_secret] =
