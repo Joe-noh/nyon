@@ -8,12 +8,19 @@ defmodule NyonWeb.SessionController do
   def create(conn, %{"token" => token, "secret" => secret}) do
     twitter_module = Application.get_env(:nyon, :twitter_module, Nyon.Twitter)
 
-    %{id_str: twitter_id, screen_name: name, name: display_name} =
-      twitter_module.fetch_profile!(token, secret)
+    %Nyon.Twitter{
+      id_str: twitter_id,
+      screen_name: name,
+      name: display_name
+    } = twitter_module.fetch_profile!(token, secret)
 
     case Identities.get_twitter_account(twitter_id) do
       nil ->
-        with attrs = %{"name" => name, "display_name" => display_name, "twitter_id" => twitter_id},
+        with attrs = %{
+               "name" => name,
+               "display_name" => display_name,
+               "twitter_id" => twitter_id
+             },
              {:ok, user} <- Identities.create_user(attrs) do
           do_create(conn, user)
         end

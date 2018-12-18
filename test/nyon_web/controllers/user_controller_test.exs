@@ -8,7 +8,8 @@ defmodule NyonWeb.UserControllerTest do
              %{
                "id" => Match.binary(),
                "name" => Match.binary(),
-               "display_name" => Match.binary()
+               "display_name" => Match.binary(),
+               "avatar_url" => Match.binary()
              },
              exact_same_keys: true
            )

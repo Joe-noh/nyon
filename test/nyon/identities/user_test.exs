@@ -4,7 +4,11 @@ defmodule Nyon.Identities.UserTest do
   alias Nyon.Repo
   alias Nyon.Identities.User
 
-  @attrs %{name: "john_doe", display_name: "John Doe"}
+  @attrs %{
+    name: "john_doe",
+    display_name: "John Doe",
+    avatar_url: "https://example.com/img.png"
+  }
 
   describe "presence validation" do
     test "name is required" do

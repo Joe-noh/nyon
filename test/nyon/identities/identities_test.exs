@@ -4,7 +4,11 @@ defmodule Nyon.IdentitiesTest do
   alias Nyon.Identities
   alias Nyon.Identities.User
 
-  @params %{"name" => "john_doe", "display_name" => "John Doe", "twitter_id" => "123456789"}
+  @params %{
+    "name" => "john_doe",
+    "display_name" => "John Doe",
+    "twitter_id" => "123456789"
+  }
 
   describe "create_user/1" do
     test "insert user and twitter account" do
@@ -13,6 +17,7 @@ defmodule Nyon.IdentitiesTest do
 
       assert user.name == @params["name"]
       assert user.display_name == @params["display_name"]
+      assert user.avatar_url
       assert twitter_account.twitter_id == @params["twitter_id"]
       assert user.id == twitter_account.user_id
     end

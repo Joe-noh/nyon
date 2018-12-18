@@ -9,7 +9,8 @@ defmodule NyonWeb.SessionControllerTest do
                Match.map(%{
                  "id" => Match.binary(),
                  "name" => Match.binary(),
-                 "display_name" => Match.binary()
+                 "display_name" => Match.binary(),
+                 "avatar_url" => Match.binary()
                }),
              "token" => Match.binary()
            })

@@ -7,7 +7,12 @@ defmodule Nyon.Identities.TwitterAccountTest do
   @attrs %{twitter_id: "123456789"}
 
   setup do
-    user_attrs = %{name: "john_doe", display_name: "John Doe"}
+    user_attrs = %{
+      name: "john_doe",
+      display_name: "John Doe",
+      avatar_url: "https://example.com/img.png"
+    }
+
     user = %User{} |> User.changeset(user_attrs) |> Repo.insert!()
 
     %{user: user}
