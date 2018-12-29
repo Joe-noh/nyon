@@ -3,7 +3,7 @@ dotenv.load();
 
 import express from 'express';
 import compression from 'compression';
-import sapperStore from './middlewares/sapper-store';
+import sapperStore from 'src/middlewares/sapper-store';
 
 const app = express();
 

@@ -1,4 +1,4 @@
-import * as sapper from '../../__sapper__/server.js';
+import * as sapper from '__sapper__/server.js';
 import { Store } from 'svelte/store.js';
 
 export default () => sapper.middleware({
