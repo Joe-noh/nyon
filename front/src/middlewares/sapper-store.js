@@ -4,6 +4,5 @@ import { Store } from 'svelte/store.js';
 export default () => sapper.middleware({
   store: req => new Store({
     apiBaseUrl: process.env.API_BASE_URL,
-    authToken: req.session.authToken,
   })
 });

@@ -11,5 +11,9 @@ defmodule NyonWeb.Router do
 
     resources "/users", UserController, only: [:show, :update, :delete]
     resources "/sessions", SessionController, only: [:create]
+
+    scope "/oauth", Oauth do
+      resources "/authorize_url", AuthorizeUrlController, only: [:show], singleton: true
+    end
   end
 end

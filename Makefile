@@ -4,7 +4,7 @@ api:
 	cd api && mix phx.server
 
 front:
-	cd front && npm start
+	cd front && npm run dev
 
 deploy-api:
 	git push api-production `git subtree split --prefix api ${BRANCH}`:master

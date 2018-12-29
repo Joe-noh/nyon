@@ -2,35 +2,36 @@ defmodule NyonWeb.SessionController do
   use NyonWeb, :controller
 
   alias Nyon.Identities
+  alias Nyon.Twitter.{OauthToken, Profile}
 
   action_fallback NyonWeb.FallbackController
 
-  def create(conn, %{"token" => token, "secret" => secret}) do
+  def create(conn, %{"verifier" => verifier, "token" => token}) do
     twitter_module = Application.get_env(:nyon, :twitter_module, Nyon.Twitter)
 
-    %Nyon.Twitter{
-      id_str: twitter_id,
-      screen_name: name,
-      name: display_name
-    } = twitter_module.fetch_profile!(token, secret)
+    with {:ok, oauth = %OauthToken{}} <- twitter_module.fetch_access_token(verifier, token) do
+      case Identities.get_twitter_account(oauth.user_id) do
+        nil ->
+          {:ok, profile = %Profile{}} = twitter_module.fetch_profile(oauth.token, oauth.token_secret)
 
-    case Identities.get_twitter_account(twitter_id) do
-      nil ->
-        with attrs = %{
-               "name" => name,
-               "display_name" => display_name,
-               "twitter_id" => twitter_id
-             },
-             {:ok, user} <- Identities.create_user(attrs) do
-          do_create(conn, user)
-        end
+          {:ok, user} =
+            Identities.create_user(%{
+              "name" => profile.screen_name,
+              "display_name" => profile.name,
+              "twitter_id" => profile.user_id
+            })
 
-      account ->
-        do_create(conn, account.user)
+          render_user(conn, user)
+
+        account ->
+          render_user(conn, account.user)
+      end
+    else
+      {:error, 401} -> {:error, :unquthorized}
     end
   end
 
-  def do_create(conn, user) do
+  def render_user(conn, user) do
     {:ok, token, _} = NyonWeb.Token.generate_and_sign(%{"user_id" => user.id})
 
     conn

@@ -17,8 +17,36 @@ defmodule NyonWeb.SessionControllerTest do
 
   @post_params %{
     "token" => "twitter_token",
-    "secret" => "twitter_token_secret"
+    "verifier" => "twitter_token_verifier"
   }
+
+  defmodule TwitterMock do
+    def fetch_profile(_, _) do
+      profile = %Nyon.Twitter.Profile{
+        name: "John Doe",
+        screen_name: "john_doe",
+        user_id: "123456789"
+      }
+
+      {:ok, profile}
+    end
+
+    def fetch_access_token(_, _) do
+      oauth_token = %Nyon.Twitter.OauthToken{
+        token: "foo",
+        token_secret: "bar",
+        screen_name: "john_doe",
+        user_id: "123456789"
+      }
+
+      {:ok, oauth_token}
+    end
+  end
+
+  setup_all do
+    Application.put_env(:nyon, :twitter_module, TwitterMock)
+    :ok
+  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -47,6 +75,7 @@ defmodule NyonWeb.SessionControllerTest do
         |> Map.get("data")
 
       Match.assert(@pattern, json)
+      assert Identities.get_user!(json["user"]["id"])
     end
   end
 

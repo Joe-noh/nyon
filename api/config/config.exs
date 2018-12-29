@@ -29,7 +29,8 @@ config :nyon, NyonWeb.Endpoint,
 
 config :nyon, :twitter,
   consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
-  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET")
+  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET"),
+  callback_url: System.get_env("TWITTER_CALLBACK_URL")
 
 # Configures Elixir's Logger
 config :logger, :console,

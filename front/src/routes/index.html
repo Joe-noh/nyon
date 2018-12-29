@@ -1,6 +1,6 @@
 <section class="top">
   <h1><Logo /></h1>
-  <Button href="/twitter/login">Login with Twitter</Button>
+  <Button on:click="loginWithTwitter()">Login with Twitter</Button>
 </section>
 
 <script>
@@ -10,8 +10,13 @@
       Button: '../components/Button.html',
     },
     methods: {
-      loginWithTwitter() {
-        location.href = "/twitter/login";
+      async loginWithTwitter() {
+        const {apiBaseUrl} = this.store.get();
+
+        const response = await window.fetch(`${apiBaseUrl}/api/oauth/authorize_url`);
+        const json = await response.json();
+
+        location.href = json.data.url;
       },
     },
   };
