@@ -1,0 +1,29 @@
+<script>
+  import * as sapper from '__sapper__/client.js';
+
+  export default {
+    async oncreate() {
+      const {apiBaseUrl} = this.store.get();
+      const query = new URLSearchParams(location.search);
+
+      if (query.get('denied')) {
+        sapper.goto('/');
+      } else {
+        const oauthToken = query.get('oauth_token');
+        const oauthVerifier = query.get('oauth_verifier');
+
+        const response = await window.fetch(`${apiBaseUrl}/api/sessions`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json; charset=utf-8'},
+          body: JSON.stringify({token: oauthToken, verifier: oauthVerifier})
+        });
+        const json = await response.json();
+
+        localStorage.setItem('authToken', json.data.token);
+        localStorage.setItem('loginUser', JSON.stringify(json.data.user));
+
+        sapper.goto('/s');
+      }
+    }
+  };
+</script>
