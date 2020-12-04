@@ -12,7 +12,8 @@ defmodule NyonWeb.PageLiveTest do
   test "increment counter", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/")
 
-    {:ok, html} = view
+    {:ok, html} =
+      view
       |> element("#increment")
       |> render_click()
       |> Floki.parse_document()
@@ -23,7 +24,8 @@ defmodule NyonWeb.PageLiveTest do
   test "decrement counter", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/")
 
-    {:ok, html} = view
+    {:ok, html} =
+      view
       |> element("#decrement")
       |> render_click()
       |> Floki.parse_document()
