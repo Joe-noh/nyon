@@ -14,6 +14,13 @@
 </section>
 
 <section class="row">
+  <button id="increment" phx-click="inc" phx-value-diff="1">+</button>
+  <button id="decrement" phx-click="inc" phx-value-diff="-1">-</button>
+  &nbsp;
+  <span id="count"><%= @count %></span>
+</section>
+
+<section class="row">
   <article class="column">
     <h2>Resources</h2>
     <ul>
