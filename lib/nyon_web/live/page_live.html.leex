@@ -14,10 +14,10 @@
 </section>
 
 <section class="row">
-  <button phx-click="inc" phx-value-diff="1">+</button>
-  <button phx-click="inc" phx-value-diff="-1">-</button>
+  <button id="increment" phx-click="inc" phx-value-diff="1">+</button>
+  <button id="decrement" phx-click="inc" phx-value-diff="-1">-</button>
   &nbsp;
-  <%= @count %>
+  <span id="count"><%= @count %></span>
 </section>
 
 <section class="row">
