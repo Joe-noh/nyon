@@ -1,0 +1,46 @@
+name: Continuous Integration
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nyon_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-elixir@v1
+      with:
+        otp-version: '23.1.1'
+        elixir-version: '1.11.1'
+    - uses: actions/cache@v1
+      with:
+        path: api/deps
+        key: ${{ runner.os }}-nyon-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-nyon-
+    - run: mix deps.get
+    - run: mix format --check-formatted
+    - run: mix test
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+        fetch-depth: 0
+    - uses: mhanberg/gigalixir-action@v0.4.0
+      with:
+        GIGALIXIR_USERNAME: ${{ secrets.GIGALIXIR_USERNAME }}
+        GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
+        GIGALIXIR_APP: nyon
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        MIGRATIONS: true
