@@ -19,6 +19,7 @@ defmodule Nyon.DataCase do
   using do
     quote do
       alias Nyon.Repo
+      alias Nyon.Fixtures
 
       import Ecto
       import Ecto.Changeset
