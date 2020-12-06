@@ -19,6 +19,10 @@ config :nyon, NyonWeb.Endpoint,
   pubsub_server: Nyon.PubSub,
   live_view: [signing_salt: "e5RzYXfi"]
 
+config :nyon, :spotify,
+  client_id: System.get_env("SPOTIFY_CLIENT_ID"),
+  client_secret: System.get_env("SPOTIFY_CLIENT_SECRET")
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
