@@ -6,14 +6,10 @@ defmodule Nyon.Identities do
 
   def find_user(id) do
     User
-    |> where([u], u.id == ^id)
     |> join(:left, [u], s in assoc(u, :spotify_account))
+    |> where([u, s], u.id == ^id)
     |> preload([..., s], spotify_account: s)
-    |> Repo.one()
-    |> case do
-      nil -> {:error, :not_found}
-      user -> {:ok, user}
-    end
+    |> get_one()
   end
 
   def signup_user(spotify_account_params) do
@@ -27,5 +23,14 @@ defmodule Nyon.Identities do
       |> SpotifyAccount.changeset(spotify_account_params)
     end)
     |> Repo.transaction()
+  end
+
+  defp get_one(query) do
+    query
+    |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      record -> {:ok, record}
+    end
   end
 end
