@@ -1,11 +1,12 @@
 defmodule Nyon.Fixtures do
   def spotify_account(attrs \\ %{}) do
-    Map.merge(%{
+    %{
       spotify_user_id: random_string(),
       access_token: random_string(),
       refresh_token: random_string(),
       token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
-    }, attrs)
+    }
+    |> Map.merge(attrs)
   end
 
   defp random_string() do

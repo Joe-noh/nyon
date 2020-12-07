@@ -4,7 +4,7 @@ defmodule NyonWeb.Spotify.AuthorizationController do
   alias Nyon.Identities
 
   def authorize(conn, _params) do
-    redirect conn, external: Spotify.Authorization.url
+    redirect(conn, external: Spotify.Authorization.url())
   end
 
   def callback(conn, params = %{"code" => _}) do
@@ -12,7 +12,7 @@ defmodule NyonWeb.Spotify.AuthorizationController do
     %{access_token: access_token, refresh_token: refresh_token} = conn.assigns
 
     Spotify.Credentials.new(access_token, refresh_token)
-    |> Spotify.Profile.me
+    |> Spotify.Profile.me()
     |> case do
       {:ok, %Spotify.Profile{id: spotify_user_id}} ->
         spotify_account_params = %{
@@ -50,7 +50,7 @@ defmodule NyonWeb.Spotify.AuthorizationController do
         conn
         |> put_flash(:error, "Fetching profile failed. Try again later.")
         |> redirect(to: "/")
-      end
+    end
   end
 
   def callback(conn, _params) do
