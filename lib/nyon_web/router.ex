@@ -17,6 +17,11 @@ defmodule NyonWeb.Router do
   scope "/", NyonWeb do
     pipe_through :browser
 
+    scope "/spotify", Spotify do
+      get "/authorize", AuthorizationController, :authorize
+      get "/callback", AuthorizationController, :callback
+    end
+
     live "/", PageLive, :index
   end
 
