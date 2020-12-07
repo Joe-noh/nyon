@@ -8,6 +8,7 @@ defmodule NyonWeb.Router do
     plug :put_root_layout, {NyonWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Nyon.CurrentUserPlug
   end
 
   pipeline :api do

@@ -1,6 +1,8 @@
 defmodule NyonWeb.Spotify.AuthorizationController do
   use NyonWeb, :controller
 
+  alias Nyon.Identities
+
   def authorize(conn, _params) do
     redirect conn, external: Spotify.Authorization.url
   end
@@ -12,10 +14,37 @@ defmodule NyonWeb.Spotify.AuthorizationController do
     Spotify.Credentials.new(access_token, refresh_token)
     |> Spotify.Profile.me
     |> case do
-      {:ok, %Spotify.Profile{id: _spotify_user_id}} ->
-        # do signup or login
+      {:ok, %Spotify.Profile{id: spotify_user_id}} ->
+        spotify_account_params = %{
+          spotify_user_id: spotify_user_id,
+          access_token: access_token,
+          refresh_token: refresh_token,
+          token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
+        }
 
-        conn |> redirect(to: "/")
+        case Identities.signup_or_login_user(spotify_account_params) do
+          {:ok, :login, user} ->
+            conn
+            |> put_session(:current_user_id, user.id)
+            |> put_flash(:info, "Welcome back!")
+            |> redirect(to: "/")
+
+          {:ok, :signup, user} ->
+            conn
+            |> put_session(:current_user_id, user.id)
+            |> put_flash(:info, "Welcome!")
+            |> redirect(to: "/")
+
+          {:error, :login} ->
+            conn
+            |> put_flash(:error, "Logging in failed. Try again later.")
+            |> redirect(to: "/")
+
+          {:error, :signup} ->
+            conn
+            |> put_flash(:error, "Signing up failed. Try again later.")
+            |> redirect(to: "/")
+        end
 
       {:error, _} ->
         conn

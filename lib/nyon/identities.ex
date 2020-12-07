@@ -20,6 +20,22 @@ defmodule Nyon.Identities do
     |> get_one()
   end
 
+  def signup_or_login_user(%{spotify_user_id: spotify_user_id} = spotify_account_params) do
+    case find_user_by_spotify_id(spotify_user_id) do
+      {:ok, user} ->
+        case update_spotify_account(user.spotify_account, spotify_account_params) do
+          {:ok, _} -> {:ok, :login, user}
+          _error -> {:error, :login}
+        end
+
+      {:error, :not_found} ->
+        case signup_user(spotify_account_params) do
+          {:ok, %{user: user}} -> {:ok, :signup, user}
+          _error -> {:error, :signup}
+        end
+    end
+  end
+
   def signup_user(spotify_account_params) do
     user_changeset = %User{} |> User.changeset(%{})
 
@@ -31,6 +47,12 @@ defmodule Nyon.Identities do
       |> SpotifyAccount.changeset(spotify_account_params)
     end)
     |> Repo.transaction()
+  end
+
+  def update_spotify_account(account, params) do
+    account
+    |> SpotifyAccount.changeset(params)
+    |> Repo.update()
   end
 
   defp get_one(query) do
