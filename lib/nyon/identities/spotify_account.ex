@@ -6,6 +6,7 @@ defmodule Nyon.Identities.SpotifyAccount do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "spotify_accounts" do
+    field :spotify_user_id, :string
     field :access_token, :string
     field :refresh_token, :string
     field :token_expires_at, :utc_datetime_usec
@@ -18,7 +19,8 @@ defmodule Nyon.Identities.SpotifyAccount do
   @doc false
   def changeset(spotify_account, attrs) do
     spotify_account
-    |> cast(attrs, [:access_token, :refresh_token, :token_expires_at])
-    |> validate_required([:access_token, :refresh_token, :token_expires_at])
+    |> cast(attrs, [:spotify_user_id, :access_token, :refresh_token, :token_expires_at])
+    |> validate_required([:spotify_user_id, :access_token, :refresh_token, :token_expires_at])
+    |> unique_constraint(:spotify_user_id, name: "spotify_accounts_spotify_user_id_index")
   end
 end

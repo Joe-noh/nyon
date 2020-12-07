@@ -4,6 +4,7 @@ defmodule Nyon.Repo.Migrations.CreateSpotifyAccounts do
   def change do
     create table(:spotify_accounts, primary_key: false) do
       add :id, :binary_id, primary_key: true
+      add :spotify_user_id, :string, null: false
       add :access_token, :string, null: false
       add :refresh_token, :string, null: false
       add :token_expires_at, :utc_datetime, null: false
@@ -13,5 +14,6 @@ defmodule Nyon.Repo.Migrations.CreateSpotifyAccounts do
     end
 
     create index(:spotify_accounts, [:user_id])
+    create index(:spotify_accounts, [:spotify_user_id], unique: true)
   end
 end
