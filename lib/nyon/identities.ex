@@ -12,6 +12,14 @@ defmodule Nyon.Identities do
     |> get_one()
   end
 
+  def find_user_by_spotify_id(spotify_id) do
+    User
+    |> join(:left, [u], s in assoc(u, :spotify_account))
+    |> where([u, s], s.spotify_user_id == ^spotify_id)
+    |> preload([..., s], spotify_account: s)
+    |> get_one()
+  end
+
   def signup_user(spotify_account_params) do
     user_changeset = %User{} |> User.changeset(%{})
 
