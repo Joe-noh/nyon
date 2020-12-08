@@ -4,8 +4,8 @@ defmodule NyonWeb.PageLiveTest do
   import Phoenix.LiveViewTest
 
   describe "not logged in" do
-    test "redirects to signup page", %{conn: conn} do
-      assert {:error, {:redirect, %{to: "/signup"}}} = live(conn, "/")
+    test "redirects to signin page", %{conn: conn} do
+      assert {:error, {:redirect, %{to: "/signin"}}} = live(conn, "/")
     end
   end
 end

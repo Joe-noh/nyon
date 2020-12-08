@@ -18,7 +18,7 @@ defmodule NyonWeb.Router do
   scope "/", NyonWeb do
     pipe_through :browser
 
-    get "/signup", SignupController, :index
+    get "/signin", SigninController, :index
 
     scope "/spotify", Spotify do
       get "/authorize", AuthorizationController, :authorize

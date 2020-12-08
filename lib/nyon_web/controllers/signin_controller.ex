@@ -1,4 +1,4 @@
-defmodule NyonWeb.SignupController do
+defmodule NyonWeb.SigninController do
   use NyonWeb, :controller
 
   def index(conn, _params) do
