@@ -3,27 +3,9 @@ defmodule NyonWeb.PageLiveTest do
 
   import Phoenix.LiveViewTest
 
-  test "increment counter", %{conn: conn} do
-    {:ok, view, _html} = live(conn, "/")
-
-    {:ok, html} =
-      view
-      |> element("#increment")
-      |> render_click()
-      |> Floki.parse_document()
-
-    assert html |> Floki.find("#count") |> Floki.text() == "1"
-  end
-
-  test "decrement counter", %{conn: conn} do
-    {:ok, view, _html} = live(conn, "/")
-
-    {:ok, html} =
-      view
-      |> element("#decrement")
-      |> render_click()
-      |> Floki.parse_document()
-
-    assert html |> Floki.find("#count") |> Floki.text() == "-1"
+  describe "not logged in" do
+    test "redirects to signup page", %{conn: conn} do
+      assert {:error, {:redirect, %{to: "/signup"}}} = live(conn, "/")
+    end
   end
 end
