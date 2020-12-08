@@ -5,7 +5,7 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 config :nyon,
   ecto_repos: [Nyon.Repo],
@@ -18,6 +18,12 @@ config :nyon, NyonWeb.Endpoint,
   render_errors: [view: NyonWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Nyon.PubSub,
   live_view: [signing_salt: "e5RzYXfi"]
+
+config :spotify_ex,
+  client_id: System.get_env("SPOTIFY_CLIENT_ID"),
+  secret_key: System.get_env("SPOTIFY_CLIENT_SECRET"),
+  callback_url: System.get_env("SPOTIFY_CALLBACK_URL", "http://localhost:4000/spotify/callback"),
+  scopes: ~w[user-read-playback-state user-modify-playback-state]
 
 # Configures Elixir's Logger
 config :logger, :console,

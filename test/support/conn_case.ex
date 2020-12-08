@@ -25,6 +25,7 @@ defmodule NyonWeb.ConnCase do
       import NyonWeb.ConnCase
 
       alias NyonWeb.Router.Helpers, as: Routes
+      alias Nyon.Fixtures
 
       # The default endpoint for testing
       @endpoint NyonWeb.Endpoint

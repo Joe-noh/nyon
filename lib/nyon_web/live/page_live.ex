@@ -1,9 +1,17 @@
 defmodule NyonWeb.PageLive do
   use NyonWeb, :live_view
 
+  alias Nyon.Identities
+
   @impl true
+  def mount(_params, %{"current_user_id" => user_id}, socket) do
+    {:ok, current_user} = Identities.find_user(user_id)
+
+    {:ok, assign(socket, current_user: current_user, count: 0)}
+  end
+
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{}, count: 0)}
+    {:ok, redirect(socket, to: Routes.signin_path(socket, :index))}
   end
 
   @impl true

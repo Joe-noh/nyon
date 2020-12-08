@@ -8,6 +8,7 @@ defmodule NyonWeb.Router do
     plug :put_root_layout, {NyonWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Nyon.CurrentUserPlug
   end
 
   pipeline :api do
@@ -16,6 +17,13 @@ defmodule NyonWeb.Router do
 
   scope "/", NyonWeb do
     pipe_through :browser
+
+    get "/signin", SigninController, :index
+
+    scope "/spotify", Spotify do
+      get "/authorize", AuthorizationController, :authorize
+      get "/callback", AuthorizationController, :callback
+    end
 
     live "/", PageLive, :index
   end
