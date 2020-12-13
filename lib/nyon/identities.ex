@@ -49,7 +49,28 @@ defmodule Nyon.Identities do
     |> Repo.transaction()
   end
 
-  def update_spotify_account(account, params) do
+  def refresh_if_expired(account = %SpotifyAccount{}) do
+    if SpotifyAccount.token_expired?(account) do
+      account
+      |> SpotifyAccount.credentials()
+      |> Spotify.Authentication.refresh()
+      |> case do
+        {:ok, creds} ->
+          params = %{
+            access_token: creds.access_token,
+            token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
+          }
+          update_spotify_account(account, params)
+
+        _ ->
+          :error
+      end
+    else
+      {:ok, account}
+    end
+  end
+
+  defp update_spotify_account(account, params) do
     account
     |> SpotifyAccount.changeset(params)
     |> Repo.update()
