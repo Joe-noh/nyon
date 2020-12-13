@@ -23,4 +23,14 @@ defmodule Nyon.Identities.SpotifyAccount do
     |> validate_required([:spotify_user_id, :access_token, :refresh_token, :token_expires_at])
     |> unique_constraint(:spotify_user_id, name: "spotify_accounts_spotify_user_id_index")
   end
+
+  def token_expired?(%__MODULE__{token_expires_at: token_expires_at}) do
+    token_expires_at
+    |> DateTime.add(-30, :second)
+    |> DateTime.compare(DateTime.utc_now())
+    |> case do
+      :gt -> false
+      _ -> true
+    end
+  end
 end
