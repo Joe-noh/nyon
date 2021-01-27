@@ -2,19 +2,19 @@ defmodule NyonWeb.Spotify.AuthorizationController do
   use NyonWeb, :controller
 
   alias Nyon.Identities
+  alias Sptfy.Object.{OAuthResponse, PrivateUser}
 
   def authorize(conn, _params) do
-    redirect(conn, external: Spotify.Authorization.url())
+    %{client_id: client_id, callback_url: callback_url, scopes: scopes} = Nyon.spotify_config()
+
+    redirect(conn, external: Sptfy.OAuth.url(client_id, callback_url, %{scope: scopes}))
   end
 
-  def callback(conn, params = %{"code" => _}) do
-    conn = authenticate_with_spotify(conn, params)
-    %{access_token: access_token, refresh_token: refresh_token} = conn.assigns
+  def callback(conn, %{"code" => code}) do
+    {:ok, %OAuthResponse{access_token: access_token, refresh_token: refresh_token}} = authenticate_with_spotify(code)
 
-    Spotify.Credentials.new(access_token, refresh_token)
-    |> Spotify.Profile.me()
-    |> case do
-      {:ok, %Spotify.Profile{id: spotify_user_id}} ->
+    case Sptfy.Profile.get_my_profile(access_token) do
+      {:ok, %PrivateUser{id: spotify_user_id}} ->
         spotify_account_params = %{
           spotify_user_id: spotify_user_id,
           access_token: access_token,
@@ -57,15 +57,9 @@ defmodule NyonWeb.Spotify.AuthorizationController do
     conn |> redirect(to: "/")
   end
 
-  defp authenticate_with_spotify(conn, params) do
-    {:ok, conn} = Spotify.Authentication.authenticate(conn, params)
+  defp authenticate_with_spotify(code) do
+    %{client_id: client_id, client_secret: client_secret, callback_url: callback_url} = Nyon.spotify_config()
 
-    %{"spotify_access_token" => access_token, "spotify_refresh_token" => refresh_token} = conn.cookies
-
-    conn
-    |> delete_resp_cookie("spotify_access_token")
-    |> delete_resp_cookie("spotify_refresh_token")
-    |> assign(:access_token, access_token)
-    |> assign(:refresh_token, refresh_token)
+    Sptfy.OAuth.get_token(client_id, client_secret, code, callback_url)
   end
 end

@@ -19,9 +19,9 @@ config :nyon, NyonWeb.Endpoint,
   pubsub_server: Nyon.PubSub,
   live_view: [signing_salt: "e5RzYXfi"]
 
-config :spotify_ex,
+config :nyon, :spotify,
   client_id: System.get_env("SPOTIFY_CLIENT_ID"),
-  secret_key: System.get_env("SPOTIFY_CLIENT_SECRET"),
+  client_secret: System.get_env("SPOTIFY_CLIENT_SECRET"),
   callback_url: System.get_env("SPOTIFY_CALLBACK_URL", "http://localhost:4000/spotify/callback"),
   scopes: ~w[user-read-playback-state user-modify-playback-state]
 

@@ -1,5 +1,5 @@
 import Config
 
-config :spotify_ex,
+config :nyon, :spotify,
   client_id: "SPOTIFY_CLIENT_ID",
-  secret_key: "SPOTIFY_CLIENT_SECRET"
+  client_secret: "SPOTIFY_CLIENT_SECRET"

@@ -46,7 +46,7 @@ defmodule Nyon.MixProject do
       {:phoenix_live_view, "~> 0.15.0"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
-      {:spotify_ex, "~> 2.0"},
+      {:sptfy, "~> 0.1"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"}
     ]
