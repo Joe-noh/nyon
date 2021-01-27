@@ -60,6 +60,7 @@ defmodule Nyon.Identities do
             access_token: creds.access_token,
             token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
           }
+
           update_spotify_account(account, params)
 
         _ ->
