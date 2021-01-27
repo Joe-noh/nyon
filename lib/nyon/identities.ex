@@ -3,6 +3,7 @@ defmodule Nyon.Identities do
 
   alias Nyon.Repo
   alias Nyon.Identities.{User, SpotifyAccount}
+  alias Sptfy.Object.OAuthResponse
 
   def find_user(id) do
     User
@@ -51,17 +52,14 @@ defmodule Nyon.Identities do
 
   def refresh_if_expired(account = %SpotifyAccount{}) do
     if SpotifyAccount.token_expired?(account) do
-      account
-      |> SpotifyAccount.credentials()
-      |> Spotify.Authentication.refresh()
-      |> case do
-        {:ok, creds} ->
-          params = %{
-            access_token: creds.access_token,
-            token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
-          }
+      %{client_id: client_id, client_secret: client_secret} = Nyon.spotify_config()
 
-          update_spotify_account(account, params)
+      case Sptfy.OAuth.refresh_token(client_id, client_secret, account.refresh_token) do
+        {:ok, %OAuthResponse{access_token: access_token}} ->
+          update_spotify_account(account, %{
+            access_token: access_token,
+            token_expires_at: DateTime.utc_now() |> DateTime.add(3600, :second)
+          })
 
         _ ->
           :error

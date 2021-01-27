@@ -72,24 +72,24 @@ defmodule NyonWeb.Spotify.AuthorizationControllerTest do
   end
 
   defp spotify_auth_mock do
-    response = %HTTPoison.Response{
-      status_code: 200,
-      body: Jason.encode!(%{access_token: "ACCESS_TOKEN", refresh_token: "REFRESH_TOKEN"})
+    response = %Sptfy.Object.OAuthResponse{
+      access_token: "ACCESS_TOKEN",
+      refresh_token: "REFRESH_TOKEN"
     }
 
-    {Spotify.AuthRequest, [], [post: fn _ -> {:ok, response} end]}
+    {Sptfy.OAuth, [], [get_token: fn _, _, _, _ -> {:ok, response} end]}
   end
 
   defp profile_success_mock(spotify_id \\ "SPOTIFY_USER_ID") do
-    {Spotify.Profile, [], [me: fn _ -> {:ok, %Spotify.Profile{id: spotify_id}} end]}
+    {Sptfy.Profile, [], [get_my_profile: fn _ -> {:ok, %Sptfy.Object.PrivateUser{id: spotify_id}} end]}
   end
 
   defp profile_failure_mock do
-    response = %HTTPoison.Response{
-      status_code: 400,
-      body: Jason.encode!(%{error: "!"})
+    response = %Sptfy.Object.OAuthError{
+      error: "ERROR",
+      error_description: "ERROR_DESCRIPTION"
     }
 
-    {Spotify.Profile, [], [me: fn _ -> {:error, response} end]}
+    {Sptfy.Profile, [], [get_my_profile: fn _ -> {:error, response} end]}
   end
 end
