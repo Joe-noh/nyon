@@ -14,3 +14,16 @@
 .phx-disconnected *{
   pointer-events: none;
 }
+
+.alert {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: var(--sl-spacing-x-small);
+  width: 100%;
+  max-width: 500px;
+
+  .alert-entry:not(:last-child) {
+    margin-bottom: var(--sl-spacing-x-small);
+  }
+}

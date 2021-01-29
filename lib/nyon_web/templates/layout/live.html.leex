@@ -1,11 +1,13 @@
 <main role="main" class="container">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+  <sl-alert type="primary" open="<%= Map.has_key?(@flash, "info") %>" closable>
+    <sl-icon slot="icon" name="info-circle"></sl-icon>
+    <%= live_flash(@flash, :info) %>
+  </sl-alert>
 
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+  <sl-alert type="warning" open="<%= Map.has_key?(@flash, "error") %>" closable>
+    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+    <%= live_flash(@flash, :error) %>
+  </sl-alert>
 
   <%= @inner_content %>
 </main>

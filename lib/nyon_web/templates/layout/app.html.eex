@@ -1,5 +1,19 @@
-<main role="main" class="container">
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+<main role="main">
+  <div class="alert">
+    <%= if get_flash(@conn, :info) do %>
+      <sl-alert class="alert-entry" type="primary" open closable>
+        <sl-icon slot="icon" name="info-circle"></sl-icon>
+        <%= get_flash(@conn, :info) %>
+      </sl-alert>
+    <% end %>
+
+    <%= if get_flash(@conn, :error) do %>
+      <sl-alert class="alert-entry" type="warning" open closable>
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <%= get_flash(@conn, :error) %>
+      </sl-alert>
+    <% end %>
+  </div>
+
   <%= @inner_content %>
 </main>
