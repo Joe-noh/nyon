@@ -1,0 +1,11 @@
+.phx-no-feedback.invalid-feedback,
+.phx-no-feedback .invalid-feedback {
+  display: none;
+}
+
+.phx-disconnected {
+  cursor: wait;
+}
+.phx-disconnected *{
+  pointer-events: none;
+}

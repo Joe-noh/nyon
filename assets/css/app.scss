@@ -1,17 +1,5 @@
 @import "sanitize.css";
 @import "nprogress/nprogress.css";
+@import "base/live_view";
 @import "components/alert";
 @import "pages/signup.scss";
-
-/* LiveView specific classes for your customizations */
-.phx-no-feedback.invalid-feedback,
-.phx-no-feedback .invalid-feedback {
-  display: none;
-}
-
-.phx-disconnected {
-  cursor: wait;
-}
-.phx-disconnected *{
-  pointer-events: none;
-}
