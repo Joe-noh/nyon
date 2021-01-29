@@ -1,6 +1,9 @@
 <section class="row">
   <%= if @device do %>
     <p><%= @device.name %> (<%= @device.type %>)</p>
-    <button phx-click="play">Play</button>
+    <sl-button phx-click="play">
+      <sl-icon slot="prefix" name="music-note"></sl-icon>
+      Play
+    </sl-button>
   <% end %>
 </section>
