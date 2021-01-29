@@ -1,6 +1,6 @@
 <section class="row">
-  <button id="increment" phx-click="inc" phx-value-diff="1">+</button>
-  <button id="decrement" phx-click="inc" phx-value-diff="-1">-</button>
-  &nbsp;
-  <span id="count"><%= @count %></span>
+  <%= if @device do %>
+    <p><%= @device.name %> (<%= @device.type %>)</p>
+    <button phx-click="play">Play</button>
+  <% end %>
 </section>
