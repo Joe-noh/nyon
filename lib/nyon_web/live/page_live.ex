@@ -22,16 +22,26 @@ defmodule NyonWeb.PageLive do
   end
 
   @impl true
+  def handle_event("play", _, socket = %{assigns: %{user: user, device: device}}) do
+    case device do
+      nil ->
+        :do_nothing
+
+      %Sptfy.Object.Device{id: id} ->
+        {:ok, account} = Identities.refresh_if_expired(user.spotify_account)
+        Sptfy.Player.play(account.access_token, uris: ["spotify:track:5MimWt53Ukh0gcv7mC0Rnx"], device_id: id)
+    end
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(:get_player, socket = %{assigns: %{user: user}}) do
     {:ok, account} = Identities.refresh_if_expired(user.spotify_account)
 
     case Sptfy.Player.get_devices(account.access_token) do
       {:ok, devices = [device | _]} ->
-        skyline_pigeon = "spotify:track:5MimWt53Ukh0gcv7mC0Rnx"
         device = find_active_device(devices) || device
-
-        Sptfy.Player.play(account.access_token, uris: [skyline_pigeon], device_id: device.id)
-
         socket = assign(socket, :device, device)
         {:noreply, socket}
 

@@ -1,6 +1,6 @@
 <section class="row">
   <%= if @device do %>
-    <%= @device.name %>
-    <%= @device.type %>
+    <p><%= @device.name %> (<%= @device.type %>)</p>
+    <button phx-click="play">Play</button>
   <% end %>
 </section>
