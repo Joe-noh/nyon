@@ -1,6 +1,7 @@
 @import "sanitize.css";
 @import "nprogress/nprogress.css";
-@import "./signup.scss";
+@import "components/alert";
+@import "pages/signup.scss";
 
 /* LiveView specific classes for your customizations */
 .phx-no-feedback.invalid-feedback,
@@ -13,17 +14,4 @@
 }
 .phx-disconnected *{
   pointer-events: none;
-}
-
-.alert {
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: var(--sl-spacing-x-small);
-  width: 100%;
-  max-width: 500px;
-
-  .alert-entry:not(:last-child) {
-    margin-bottom: var(--sl-spacing-x-small);
-  }
 }
