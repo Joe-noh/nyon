@@ -13,6 +13,7 @@ defmodule NyonWeb.PageLive do
       |> assign(:user, current_user)
       |> assign(:device, nil)
       |> assign(:device_state, :loading)
+      |> assign(:board, Nyon.Minesweeper.Board.new(10, 10, 20))
 
     {:ok, socket}
   end

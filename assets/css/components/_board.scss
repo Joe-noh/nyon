@@ -1,0 +1,27 @@
+.board {
+  display: flex;
+  justify-content: center;
+
+  .rows {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .row {
+      display: flex;
+      flex-flow: row nowrap;
+
+      .cell {
+        width: 1.3rem;
+        height: 1.3rem;
+        margin: 1px;
+        font-size: 1rem;
+        font-family: 'Courier New', Courier, monospace;
+        border: solid 1px #888;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
