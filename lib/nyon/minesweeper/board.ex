@@ -47,6 +47,10 @@ defmodule Nyon.Minesweeper.Board do
     end)
   end
 
+  def open_cell(board = %__MODULE__{gameover: true}) do
+    board
+  end
+
   def open_cell(board = %__MODULE__{cells: cells}, {x, y}) do
     case do_open_cell(cells, {x, y}) do
       {:ok, cells} ->
@@ -108,10 +112,18 @@ defmodule Nyon.Minesweeper.Board do
     board
   end
 
+  def flag_cell(board = %__MODULE__{gameover: true}) do
+    board
+  end
+
   def flag_cell(board = %__MODULE__{cells: cells}, {x, y}) do
     cells = Map.update!(cells, {x, y}, &Cell.toggle_flag/1)
 
     %__MODULE__{board | cells: cells}
+  end
+
+  def open_neighbors(board = %__MODULE__{gameover: true}) do
+    board
   end
 
   def open_neighbors(board = %__MODULE__{cells: cells}, {x, y}) do
