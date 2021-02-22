@@ -17,6 +17,10 @@ defmodule Nyon.Minesweeper.Server do
     GenServer.call(@name, {:open_cell, coord})
   end
 
+  def flag_cell(coord) do
+    GenServer.call(@name, {:flag_cell, coord})
+  end
+
   def reset do
     GenServer.call(@name, :reset)
   end
@@ -33,6 +37,12 @@ defmodule Nyon.Minesweeper.Server do
 
   def handle_call({:open_cell, coord}, _from, board) do
     board = Board.open_cell(board, coord)
+
+    {:reply, board, board}
+  end
+
+  def handle_call({:flag_cell, coord}, _from, board) do
+    board = Board.flag_cell(board, coord)
 
     {:reply, board, board}
   end
