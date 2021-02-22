@@ -72,7 +72,7 @@ defmodule Nyon.Minesweeper.Board do
         cells =
           cells
           |> Map.update!({x, y}, &Cell.open/1)
-          |> open_neighbors({x, y})
+          |> safe_open_neighbors({x, y})
 
         {:ok, cells}
 
@@ -86,7 +86,7 @@ defmodule Nyon.Minesweeper.Board do
     end
   end
 
-  defp open_neighbors(cells, {x, y}) do
+  defp safe_open_neighbors(cells, {x, y}) do
     {x, y}
     |> neighbor_coords()
     |> Enum.reduce(cells, fn neighbor, cells ->
@@ -112,6 +112,57 @@ defmodule Nyon.Minesweeper.Board do
     cells = Map.update!(cells, {x, y}, &Cell.toggle_flag/1)
 
     %__MODULE__{board | cells: cells}
+  end
+
+  def open_neighbors(board = %__MODULE__{cells: cells}, {x, y}) do
+    case Map.get(cells, {x, y}) do
+      nil ->
+        board
+
+      %Cell{state: state} when state in [:flag, :closed] ->
+        board
+
+      %Cell{state: :open, mine: false, neighbor: n} ->
+        neighbor_coords = neighbor_coords({x, y})
+
+        flag_count = Enum.count(neighbor_coords, fn coord ->
+          case Map.get(cells, coord) do
+            nil -> false
+            cell -> cell.state == :flag
+          end
+        end)
+
+        if flag_count == n do
+          Enum.all?(neighbor_coords, fn coord ->
+            case Map.get(cells, coord) do
+              nil -> true
+              cell -> (cell.state == :flag && cell.mine == true) || (cell.state != :flag && cell.mine == false)
+            end
+          end)
+          |> case do
+            true ->
+              cells = Enum.reduce(neighbor_coords, cells, fn coord, cells ->
+                case Map.get(cells, coord) do
+                  nil ->
+                    cells
+
+                  %Cell{state: state} when state in [:flag, :open] ->
+                    cells
+
+                  %Cell{state: :closed} ->
+                    Map.update!(cells, coord, &Cell.open/1)
+                end
+              end)
+
+              %__MODULE__{board | cells: cells}
+
+            false ->
+              gameover(board)
+          end
+        else
+          board
+        end
+    end
   end
 
   defp coords(%__MODULE__{width: width, height: height}) do

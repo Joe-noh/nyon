@@ -36,6 +36,15 @@ defmodule NyonWeb.Components.MinesweeperBoard do
   end
 
   @impl true
+  def handle_event("open-neighbors", %{"x" => x, "y" => y}, socket) do
+    coord = {String.to_integer(x), String.to_integer(y)}
+    board = Server.open_neighbors(coord)
+    Phoenix.PubSub.broadcast(Nyon.PubSub, "board:1", :update_board)
+
+    {:noreply, assign(socket, :board, board)}
+  end
+
+  @impl true
   def handle_event("restart", _, socket) do
     :ok = Server.reset()
     Phoenix.PubSub.broadcast(Nyon.PubSub, "board:1", :update_board)
