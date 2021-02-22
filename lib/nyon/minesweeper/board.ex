@@ -140,12 +140,13 @@ defmodule Nyon.Minesweeper.Board do
       %Cell{state: :open, mine: false, neighbor: n} ->
         neighbor_coords = neighbor_coords({x, y})
 
-        flag_count = Enum.count(neighbor_coords, fn coord ->
-          case Map.get(cells, coord) do
-            nil -> false
-            cell -> cell.state == :flag
-          end
-        end)
+        flag_count =
+          Enum.count(neighbor_coords, fn coord ->
+            case Map.get(cells, coord) do
+              nil -> false
+              cell -> cell.state == :flag
+            end
+          end)
 
         if flag_count == n do
           Enum.all?(neighbor_coords, fn coord ->
@@ -156,23 +157,24 @@ defmodule Nyon.Minesweeper.Board do
           end)
           |> case do
             true ->
-              cells = Enum.reduce(neighbor_coords, cells, fn coord, cells ->
-                case Map.get(cells, coord) do
-                  nil ->
-                    cells
+              cells =
+                Enum.reduce(neighbor_coords, cells, fn coord, cells ->
+                  case Map.get(cells, coord) do
+                    nil ->
+                      cells
 
-                  %Cell{state: state} when state in [:flag, :open] ->
-                    cells
+                    %Cell{state: state} when state in [:flag, :open] ->
+                      cells
 
-                  %Cell{state: :closed, mine: false, neighbor: 0} ->
-                    cells
-                    |> Map.update!({x, y}, &Cell.open/1)
-                    |> safe_open_neighbors({x, y})
+                    %Cell{state: :closed, mine: false, neighbor: 0} ->
+                      cells
+                      |> Map.update!({x, y}, &Cell.open/1)
+                      |> safe_open_neighbors({x, y})
 
-                  %Cell{state: :closed} ->
-                    Map.update!(cells, coord, &Cell.open/1)
-                end
-              end)
+                    %Cell{state: :closed} ->
+                      Map.update!(cells, coord, &Cell.open/1)
+                  end
+                end)
 
               %__MODULE__{board | cells: cells}
 
