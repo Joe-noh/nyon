@@ -1,0 +1,27 @@
+<section class="board">
+  <div class="rows">
+    <%= for y <- 0..(@board.height - 1) do %>
+      <div class="row">
+        <%= for x <- 0..(@board.width - 1) do %>
+          <% cell = Map.get(@board.cells, {x, y}) %>
+          <span class="cell" phx-click="open-cell" phx-target="<%= @myself %>" phx-value-x="<%= x %>" phx-value-y="<%= y %>">
+            <%= if cell.state == :open do %>
+              <%= if cell.mine do %>
+                x
+              <% else %>
+                <%= cell.neighbor %>
+              <% end %>
+            <% end %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= if @board.gameover do %>
+    <sl-button phx-click="restart" phx-target="<%= @myself %>" phx-update="ignore">
+      <sl-icon slot="prefix" name="emoji-dizzy"></sl-icon>
+      Restart
+    </sl-button>
+  <% end %>
+</section>
