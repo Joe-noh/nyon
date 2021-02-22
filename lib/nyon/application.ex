@@ -14,9 +14,8 @@ defmodule Nyon.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Nyon.PubSub},
       # Start the Endpoint (http/https)
-      NyonWeb.Endpoint
-      # Start a worker by calling: Nyon.Worker.start_link(arg)
-      # {Nyon.Worker, arg}
+      NyonWeb.Endpoint,
+      Nyon.Minesweeper.Server
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

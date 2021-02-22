@@ -1,27 +1,36 @@
 defmodule NyonWeb.Components.MinesweeperBoard do
   use Phoenix.LiveComponent
 
-  alias Nyon.Minesweeper.Board
+  alias Nyon.Minesweeper.Server
 
   @impl true
   def mount(socket) do
-    socket = socket |> assign(:board, Board.new(10, 10, 20))
+    board = Server.board()
 
-    {:ok, socket}
+    {:ok, assign(socket, :board, board)}
   end
 
   @impl true
-  def handle_event("open-cell", %{"x" => x, "y" => y}, socket = %{assigns: %{board: board}}) do
-    coord = {String.to_integer(x), String.to_integer(y)}
-    socket = socket |> assign(:board, Board.open_cell(board, coord))
+  def update(_, socket) do
+    board = Server.board()
 
-    {:noreply, socket}
+    {:ok, assign(socket, :board, board)}
+  end
+
+  @impl true
+  def handle_event("open-cell", %{"x" => x, "y" => y}, socket) do
+    coord = {String.to_integer(x), String.to_integer(y)}
+    board = Server.open_cell(coord)
+    Phoenix.PubSub.broadcast(Nyon.PubSub, "board:1", :update_board)
+
+    {:noreply, assign(socket, :board, board)}
   end
 
   @impl true
   def handle_event("restart", _, socket) do
-    socket = socket |> assign(:board, Board.new(10, 10, 20))
+    :ok = Server.reset()
+    Phoenix.PubSub.broadcast(Nyon.PubSub, "board:1", :update_board)
 
-    {:noreply, socket}
+    {:noreply, assign(socket, :board, Server.board())}
   end
 end

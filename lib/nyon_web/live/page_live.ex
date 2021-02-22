@@ -8,6 +8,8 @@ defmodule NyonWeb.PageLive do
     {:ok, current_user} = Identities.find_user(user_id)
     send(self(), :get_player)
 
+    :ok = Phoenix.PubSub.subscribe(Nyon.PubSub, "board:1")
+
     socket =
       socket
       |> assign(:user, current_user)
@@ -51,6 +53,13 @@ defmodule NyonWeb.PageLive do
       {:error, _} ->
         {:noreply, socket}
     end
+  end
+
+  @impl true
+  def handle_info(:update_board, socket) do
+    send_update(NyonWeb.Components.MinesweeperBoard, id: 1)
+
+    {:noreply, socket}
   end
 
   defp find_active_device(devices) do
