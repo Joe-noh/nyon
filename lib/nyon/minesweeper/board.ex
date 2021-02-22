@@ -149,6 +149,11 @@ defmodule Nyon.Minesweeper.Board do
                   %Cell{state: state} when state in [:flag, :open] ->
                     cells
 
+                  %Cell{state: :closed, mine: false, neighbor: 0} ->
+                    cells
+                    |> Map.update!({x, y}, &Cell.open/1)
+                    |> safe_open_neighbors({x, y})
+
                   %Cell{state: :closed} ->
                     Map.update!(cells, coord, &Cell.open/1)
                 end
