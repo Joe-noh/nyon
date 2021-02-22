@@ -19,6 +19,10 @@
                 <%= cell.neighbor %>
               <% end %>
             <% end %>
+
+            <%= if cell.state == :flag do %>
+              F
+            <% end %>
           </span>
         <% end %>
       </div>
