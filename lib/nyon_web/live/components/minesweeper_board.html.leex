@@ -1,16 +1,27 @@
-<section class="board">
+<section id="board" class="board">
   <div class="rows">
     <%= for y <- 0..(@board.height - 1) do %>
       <div class="row">
         <%= for x <- 0..(@board.width - 1) do %>
           <% cell = Map.get(@board.cells, {x, y}) %>
-          <span class="cell" phx-click="open-cell" phx-target="<%= @myself %>" phx-value-x="<%= x %>" phx-value-y="<%= y %>">
+          <span id="cell-<%= x %>-<%= y %>"
+            class="cell"
+            phx-click="open-cell"
+            phx-target="<%= @myself %>"
+            phx-value-x="<%= x %>"
+            phx-value-y="<%= y %>"
+            phx-hook="Cell"
+          >
             <%= if cell.state == :open do %>
               <%= if cell.mine do %>
                 x
               <% else %>
                 <%= cell.neighbor %>
               <% end %>
+            <% end %>
+
+            <%= if cell.state == :flag do %>
+              F
             <% end %>
           </span>
         <% end %>

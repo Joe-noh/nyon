@@ -13,4 +13,24 @@ defmodule Nyon.Minesweeper.Cell do
   def open(cell) do
     cell
   end
+
+  def close(cell = %__MODULE__{state: :flag}) do
+    %__MODULE__{cell | state: :closed}
+  end
+
+  def close(cell) do
+    cell
+  end
+
+  def toggle_flag(cell = %__MODULE__{state: :closed}) do
+    %__MODULE__{cell | state: :flag}
+  end
+
+  def toggle_flag(cell = %__MODULE__{state: :flag}) do
+    %__MODULE__{cell | state: :closed}
+  end
+
+  def toggle_flag(cell) do
+    cell
+  end
 end
