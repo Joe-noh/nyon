@@ -131,6 +131,9 @@ defmodule Nyon.Minesweeper.Board do
       nil ->
         board
 
+      %Cell{mine: true} ->
+        gameover(board)
+
       %Cell{state: state} when state in [:flag, :closed] ->
         board
 
