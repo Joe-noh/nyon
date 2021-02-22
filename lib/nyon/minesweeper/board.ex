@@ -4,6 +4,7 @@ defmodule Nyon.Minesweeper.Board do
   defstruct [
     width: 0,
     height: 0,
+    gameover: false,
     cells: %{}
   ]
 
@@ -12,32 +13,60 @@ defmodule Nyon.Minesweeper.Board do
   end
 
   def open_cell(board = %__MODULE__{cells: cells}, {x, y}) do
-    %__MODULE__{board | cells: do_open_cell(cells, {x, y})}
+    case do_open_cell(cells, {x, y}) do
+      {:ok, cells} ->
+        %__MODULE__{board | cells: cells}
+
+      :boom ->
+        gameover(board)
+    end
   end
 
   defp do_open_cell(cells, {x, y}) do
     case Map.get(cells, {x, y}) do
       nil ->
-        cells
+        {:ok, cells}
+
+      %Cell{state: :closed, mine: true} ->
+        :boom
 
       %Cell{state: :open} ->
-        cells
+        {:ok, cells}
 
-      %Cell{state: :closed, neighbor: 0} ->
-        cells
-        |> Map.update!({x, y}, &Cell.open/1)
-        |> open_neighbors({x, y})
+      %Cell{state: :closed, mine: false, neighbor: 0} ->
+        cells =
+          cells
+          |> Map.update!({x, y}, &Cell.open/1)
+          |> open_neighbors({x, y})
+
+        {:ok, cells}
 
       %Cell{state: :closed, neighbor: _} ->
-        cells
-        |> Map.update!({x, y}, &Cell.open/1)
+        cells = cells |> Map.update!({x, y}, &Cell.open/1)
+
+        {:ok, cells}
     end
   end
 
   defp open_neighbors(cells, {x, y}) do
     {x, y}
     |> neighbor_coords()
-    |> Enum.reduce(cells, fn neighbor, cells -> do_open_cell(cells, neighbor) end)
+    |> Enum.reduce(cells, fn neighbor, cells ->
+      {:ok, cells} = do_open_cell(cells, neighbor)
+      cells
+    end)
+  end
+
+  defp gameover(board = %__MODULE__{gameover: false, cells: cells}) do
+    cells = Enum.reduce(coords(board), cells, fn {x, y}, acc ->
+      Map.update!(acc, {x, y}, &Cell.open/1)
+    end)
+
+    %__MODULE__{board | gameover: :true, cells: cells}
+  end
+
+  defp gameover(board) do
+    board
   end
 
   defp build_board(width, height, mine_count) do

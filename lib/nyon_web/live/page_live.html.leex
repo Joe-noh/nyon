@@ -1,13 +1,3 @@
-<section class="row">
-  <%= if @device do %>
-    <p><%= @device.name %> (<%= @device.type %>)</p>
-    <sl-button phx-click="play">
-      <sl-icon slot="prefix" name="music-note"></sl-icon>
-      Play
-    </sl-button>
-  <% end %>
-</section>
-
 <section class="board">
   <div class="rows">
     <%= for y <- 0..(@board.height - 1) do %>
@@ -28,3 +18,10 @@
     <% end %>
   </div>
 </section>
+
+<%= if @board.gameover do %>
+  <sl-button phx-click="restart" phx-update="ignore">
+    <sl-icon slot="prefix" name="emoji-dizzy"></sl-icon>
+    Restart
+  </sl-button>
+<% end %>

@@ -45,6 +45,13 @@ defmodule NyonWeb.PageLive do
   end
 
   @impl true
+  def handle_event("restart", _, socket) do
+    socket = socket |> assign(:board, Nyon.Minesweeper.Board.new(10, 10, 20))
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(:get_player, socket = %{assigns: %{user: user}}) do
     {:ok, account} = Identities.refresh_if_expired(user.spotify_account)
 
