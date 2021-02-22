@@ -30,6 +30,15 @@ const hooks = {
 
         this.pushEventTo('#board', 'flag-cell', { x, y })
       })
+
+      this.el.addEventListener('dblclick', (e) => {
+        e.preventDefault()
+
+        const x = this.el.getAttribute('phx-value-x')
+        const y = this.el.getAttribute('phx-value-y')
+
+        this.pushEventTo('#board', 'open-neighbors', { x, y })
+      })
     }
   }
 }
