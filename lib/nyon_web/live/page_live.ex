@@ -37,6 +37,14 @@ defmodule NyonWeb.PageLive do
   end
 
   @impl true
+  def handle_event("open-cell", %{"x" => x, "y" => y}, socket = %{assigns: %{board: board}}) do
+    coord = {String.to_integer(x), String.to_integer(y)}
+    socket = socket |> assign(:board, Nyon.Minesweeper.Board.open_cell(board, coord))
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(:get_player, socket = %{assigns: %{user: user}}) do
     {:ok, account} = Identities.refresh_if_expired(user.spotify_account)
 

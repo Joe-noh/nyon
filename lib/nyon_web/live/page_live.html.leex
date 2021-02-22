@@ -10,11 +10,19 @@
 
 <section class="board">
   <div class="rows">
-    <%= for h <- 0..(@board.height - 1) do %>
+    <%= for y <- 0..(@board.height - 1) do %>
       <div class="row">
-        <%= for w <- 0..(@board.width - 1) do %>
-          <% cell = Map.get(@board.cells, {w, h}) %>
-          <span class="cell"><%= if cell.mine, do: "x", else: cell.neighbor %></span>
+        <%= for x <- 0..(@board.width - 1) do %>
+          <% cell = Map.get(@board.cells, {x, y}) %>
+          <span class="cell" phx-click="open-cell" phx-value-x="<%= x %>" phx-value-y="<%= y %>">
+            <%= if cell.state == :open do %>
+              <%= if cell.mine do %>
+                x
+              <% else %>
+                <%= cell.neighbor %>
+              <% end %>
+            <% end %>
+          </span>
         <% end %>
       </div>
     <% end %>

@@ -11,6 +11,35 @@ defmodule Nyon.Minesweeper.Board do
     build_board(width, height, mine_count) |> count_neighbors()
   end
 
+  def open_cell(board = %__MODULE__{cells: cells}, {x, y}) do
+    %__MODULE__{board | cells: do_open_cell(cells, {x, y})}
+  end
+
+  defp do_open_cell(cells, {x, y}) do
+    case Map.get(cells, {x, y}) do
+      nil ->
+        cells
+
+      %Cell{state: :open} ->
+        cells
+
+      %Cell{state: :closed, neighbor: 0} ->
+        cells
+        |> Map.update!({x, y}, &Cell.open/1)
+        |> open_neighbors({x, y})
+
+      %Cell{state: :closed, neighbor: _} ->
+        cells
+        |> Map.update!({x, y}, &Cell.open/1)
+    end
+  end
+
+  defp open_neighbors(cells, {x, y}) do
+    {x, y}
+    |> neighbor_coords()
+    |> Enum.reduce(cells, fn neighbor, cells -> do_open_cell(cells, neighbor) end)
+  end
+
   defp build_board(width, height, mine_count) do
     board = %__MODULE__{width: width, height: height}
     cells =
@@ -40,6 +69,17 @@ defmodule Nyon.Minesweeper.Board do
   end
 
   defp do_count_neighbors(cells, {x, y}) do
+    {x, y}
+    |> neighbor_coords()
+    |> Enum.count(fn neighbor ->
+      case Map.get(cells, neighbor) do
+        nil -> false
+        cell -> cell.mine
+      end
+    end)
+  end
+
+  defp neighbor_coords({x, y}) do
     [
       {x-1, y-1},
       {x, y-1},
@@ -50,11 +90,5 @@ defmodule Nyon.Minesweeper.Board do
       {x, y+1},
       {x+1, y+1},
     ]
-    |> Enum.count(fn coord ->
-      case Map.get(cells, coord) do
-        nil -> false
-        cell -> cell.mine
-      end
-    end)
   end
 end
