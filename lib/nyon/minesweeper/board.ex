@@ -27,11 +27,11 @@ defmodule Nyon.Minesweeper.Board do
       nil ->
         {:ok, cells}
 
-      %Cell{state: :closed, mine: true} ->
-        :boom
-
       %Cell{state: :open} ->
         {:ok, cells}
+
+      %Cell{state: :closed, mine: true} ->
+        :boom
 
       %Cell{state: :closed, mine: false, neighbor: 0} ->
         cells =
