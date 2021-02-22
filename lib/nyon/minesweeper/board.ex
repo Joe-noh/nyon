@@ -1,12 +1,10 @@
 defmodule Nyon.Minesweeper.Board do
   alias Nyon.Minesweeper.Cell
 
-  defstruct [
-    width: 0,
-    height: 0,
-    gameover: false,
-    cells: %{}
-  ]
+  defstruct width: 0,
+            height: 0,
+            gameover: false,
+            cells: %{}
 
   def new(width, height, mine_count) do
     build_board(width, height, mine_count) |> count_neighbors()
@@ -58,11 +56,12 @@ defmodule Nyon.Minesweeper.Board do
   end
 
   defp gameover(board = %__MODULE__{gameover: false, cells: cells}) do
-    cells = Enum.reduce(coords(board), cells, fn {x, y}, acc ->
-      Map.update!(acc, {x, y}, &Cell.open/1)
-    end)
+    cells =
+      Enum.reduce(coords(board), cells, fn {x, y}, acc ->
+        Map.update!(acc, {x, y}, &Cell.open/1)
+      end)
 
-    %__MODULE__{board | gameover: :true, cells: cells}
+    %__MODULE__{board | gameover: true, cells: cells}
   end
 
   defp gameover(board) do
@@ -71,6 +70,7 @@ defmodule Nyon.Minesweeper.Board do
 
   defp build_board(width, height, mine_count) do
     board = %__MODULE__{width: width, height: height}
+
     cells =
       1..(width * height)
       |> Enum.reduce([], fn index, acc -> [index <= mine_count | acc] end)
@@ -84,15 +84,16 @@ defmodule Nyon.Minesweeper.Board do
   end
 
   defp coords(%__MODULE__{width: width, height: height}) do
-    for w <- 1..width, h <- 1..height, do: {w-1, h-1}
+    for w <- 1..width, h <- 1..height, do: {w - 1, h - 1}
   end
 
   defp count_neighbors(board = %__MODULE__{cells: cells}) do
-    cells = Enum.reduce(coords(board), cells, fn {x, y}, acc ->
-      Map.update!(acc, {x, y}, fn cell ->
-        %Cell{cell | neighbor: do_count_neighbors(cells, {x, y})}
+    cells =
+      Enum.reduce(coords(board), cells, fn {x, y}, acc ->
+        Map.update!(acc, {x, y}, fn cell ->
+          %Cell{cell | neighbor: do_count_neighbors(cells, {x, y})}
+        end)
       end)
-    end)
 
     %__MODULE__{board | cells: cells}
   end
@@ -110,14 +111,14 @@ defmodule Nyon.Minesweeper.Board do
 
   defp neighbor_coords({x, y}) do
     [
-      {x-1, y-1},
-      {x, y-1},
-      {x+1, y-1},
-      {x-1, y},
-      {x+1, y},
-      {x-1, y+1},
-      {x, y+1},
-      {x+1, y+1},
+      {x - 1, y - 1},
+      {x, y - 1},
+      {x + 1, y - 1},
+      {x - 1, y},
+      {x + 1, y},
+      {x - 1, y + 1},
+      {x, y + 1},
+      {x + 1, y + 1}
     ]
   end
 end

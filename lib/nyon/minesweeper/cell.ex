@@ -1,8 +1,9 @@
 defmodule Nyon.Minesweeper.Cell do
   defstruct [
-    state: :closed, # :closed | :flag | :open
+    # :closed | :flag | :open
+    state: :closed,
     mine: false,
-    neighbor: 0,
+    neighbor: 0
   ]
 
   def open(cell = %__MODULE__{state: :closed}) do
