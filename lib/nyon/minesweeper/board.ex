@@ -47,7 +47,7 @@ defmodule Nyon.Minesweeper.Board do
     end)
   end
 
-  def open_cell(board = %__MODULE__{gameover: true}) do
+  def open_cell(board = %__MODULE__{gameover: true}, _coord) do
     board
   end
 
@@ -112,7 +112,7 @@ defmodule Nyon.Minesweeper.Board do
     board
   end
 
-  def flag_cell(board = %__MODULE__{gameover: true}) do
+  def flag_cell(board = %__MODULE__{gameover: true}, _coord) do
     board
   end
 
@@ -122,7 +122,7 @@ defmodule Nyon.Minesweeper.Board do
     %__MODULE__{board | cells: cells}
   end
 
-  def open_neighbors(board = %__MODULE__{gameover: true}) do
+  def open_neighbors(board = %__MODULE__{gameover: true}, _coord) do
     board
   end
 
