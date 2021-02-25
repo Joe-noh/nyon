@@ -1,3 +1,7 @@
+$cell-color: rgba(255, 255, 255, .85);
+$flag-color: rgba(173, 180, 250, .85);
+$bomb-color: rgba(251, 188, 177, .85);
+
 .board {
   display: flex;
   flex-flow: column nowrap;
@@ -7,7 +11,7 @@
   .rows {
     display: flex;
     flex-flow: column nowrap;
-    margin: 2rem;
+    margin: 2rem 0;
     user-select: none;
 
     .row {
@@ -19,16 +23,36 @@
         height: 1.3rem;
         margin: 1px;
         font-size: 1rem;
-        font-family: 'Courier New', Courier, monospace;
-        border: solid 1px #888;
+        font-family: Courier, monospace;
+        font-weight: normal;
+        color: $cell-color;
+        border: solid 1px $cell-color;
         border-radius: 3px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
 
-        &:hover {
-          background-color: #eee;
+        &.open {
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
+        }
+
+        &.flag {
+          color: $flag-color;
+          border: solid 1px $flag-color;
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
+        }
+
+        &.bomb {
+          color: $bomb-color;
+          border: solid 1px $bomb-color;
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
         }
       }
     }

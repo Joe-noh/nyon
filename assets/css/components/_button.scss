@@ -1,0 +1,16 @@
+$signup-button-color: #1DB954;
+
+.signup_button::part(base) {
+  background-color: $signup-button-color;
+  color: var(--sl-color-white);
+  border: none;
+}
+
+.reset_button::part(base) {
+  background-color: transparent;
+  color: var(--sl-color-white);
+
+  &:hover {
+    border: solid 1px var(--sl-color-gray-300);
+  }
+}

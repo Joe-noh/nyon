@@ -8,10 +8,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .signup__button::part(base) {
-    background-color: var(--signup-button-color);
-    color: var(--sl-color-white);
-    border: none;
-  }
 }
