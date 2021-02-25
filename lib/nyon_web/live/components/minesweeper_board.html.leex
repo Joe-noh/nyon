@@ -5,7 +5,7 @@
         <%= for x <- 0..(@board.width - 1) do %>
           <% cell = Map.get(@board.cells, {x, y}) %>
           <span id="cell-<%= x %>-<%= y %>"
-            class="cell"
+            class="<%= cell_class(cell) %>"
             phx-click="open-cell"
             phx-target="<%= @myself %>"
             phx-value-x="<%= x %>"
@@ -14,7 +14,7 @@
           >
             <%= if cell.state == :open do %>
               <%= if cell.mine do %>
-                x
+                X
               <% else %>
                 <%= cell.neighbor %>
               <% end %>
@@ -30,7 +30,7 @@
   </div>
 
   <%= if @board.gameover do %>
-    <sl-button phx-click="restart" phx-target="<%= @myself %>" phx-update="ignore">
+    <sl-button class="reset_button" phx-click="restart" phx-target="<%= @myself %>" phx-update="ignore">
       <sl-icon slot="prefix" name="emoji-dizzy"></sl-icon>
       Restart
     </sl-button>

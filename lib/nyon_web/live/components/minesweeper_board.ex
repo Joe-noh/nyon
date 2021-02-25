@@ -1,7 +1,7 @@
 defmodule NyonWeb.Components.MinesweeperBoard do
   use Phoenix.LiveComponent
 
-  alias Nyon.Minesweeper.Server
+  alias Nyon.Minesweeper.{Cell, Server}
 
   @impl true
   def mount(socket) do
@@ -51,4 +51,8 @@ defmodule NyonWeb.Components.MinesweeperBoard do
 
     {:noreply, assign(socket, :board, Server.board())}
   end
+
+  def cell_class(%Cell{state: :open, mine: true}), do: "cell bomb"
+  def cell_class(%Cell{state: :flag}), do: "cell flag"
+  def cell_class(%Cell{state: _}), do: "cell"
 end
