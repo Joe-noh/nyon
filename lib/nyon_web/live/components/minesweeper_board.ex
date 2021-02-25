@@ -52,6 +52,8 @@ defmodule NyonWeb.Components.MinesweeperBoard do
     {:noreply, assign(socket, :board, Server.board())}
   end
 
+  def cell_class(%Cell{state: :closed}), do: "cell closed"
+  def cell_class(%Cell{state: :open, mine: false}), do: "cell open"
   def cell_class(%Cell{state: :open, mine: true}), do: "cell bomb"
   def cell_class(%Cell{state: :flag}), do: "cell flag"
   def cell_class(%Cell{state: _}), do: "cell"

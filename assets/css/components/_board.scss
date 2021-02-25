@@ -33,14 +33,26 @@ $bomb-color: rgba(251, 188, 177, .85);
         justify-content: center;
         cursor: pointer;
 
+        &.open {
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
+        }
+
         &.flag {
           color: $flag-color;
           border: solid 1px $flag-color;
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
         }
 
         &.bomb {
           color: $bomb-color;
           border: solid 1px $bomb-color;
+          & > span {
+            animation: fadeIn .15s ease-out;
+          }
         }
       }
     }

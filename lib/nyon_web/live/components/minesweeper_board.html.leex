@@ -14,14 +14,14 @@
           >
             <%= if cell.state == :open do %>
               <%= if cell.mine do %>
-                X
+                <span>X</span>
               <% else %>
-                <%= cell.neighbor %>
+                <span><%= cell.neighbor %></span>
               <% end %>
             <% end %>
 
             <%= if cell.state == :flag do %>
-              F
+              <span>F</span>
             <% end %>
           </span>
         <% end %>
