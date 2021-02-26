@@ -28,6 +28,45 @@ defmodule Nyon.Minesweeper.BoardTest do
       assert %Board{gameover: true} = Board.open_cell(board, {2, 2})
     end
 
+    test "opens neighbor safe cells if correctly flagged", %{board: board} do
+      board = %Board{cells: cells} = Board.open_cell(board, {1, 0})
+
+      assert %Cell{state: :open} = Map.get(cells, {2, 0})
+      assert %Cell{state: :open} = Map.get(cells, {2, 1})
+      refute board.gameover
+    end
+
+    test "opens continuous 0-mine cells", %{board: board} do
+      board = %Board{cells: cells} = Board.open_cell(board, {1, 0})
+
+      assert %Cell{state: :open} = Map.get(cells, {2, 0})
+      assert %Cell{state: :open} = Map.get(cells, {3, 0})
+      assert %Cell{state: :open} = Map.get(cells, {2, 1})
+      assert %Cell{state: :open} = Map.get(cells, {3, 1})
+      refute board.gameover
+    end
+
+    test "has no effect if flags is not enough", %{board: board} do
+      %Board{cells: cells} = Board.open_cell(board, {1, 1})
+
+      assert %Cell{state: :closed} = Map.get(cells, {2, 0})
+    end
+
+    test "has no effect if num of flags is more than num of neighbor mines", %{board: board} do
+      board = Board.flag_cell(board, {2, 0})
+      %Board{cells: cells} = Board.open_cell(board, {1, 0})
+
+      assert %Cell{state: :flag} = Map.get(cells, {2, 0})
+      assert %Cell{state: :closed} = Map.get(cells, {2, 1})
+    end
+
+    test "gameover if incorrectly flagged", %{board: board} do
+      board = Board.flag_cell(board, {2, 0})
+      board = Board.open_cell(board, {1, 1})
+
+      assert board.gameover
+    end
+
     test "has no effect on finished game", %{board: board} do
       board = %Board{board | gameover: true}
       board = %Board{cells: %{{2, 0} => cell}} = Board.open_cell(board, {2, 0})
@@ -57,58 +96,6 @@ defmodule Nyon.Minesweeper.BoardTest do
       board = %Board{cells: %{{2, 2} => cell}} = Board.flag_cell(board, {2, 2})
 
       assert cell.state == :closed
-      assert board.gameover
-    end
-  end
-
-  describe "open_neighbors/2" do
-    setup [:build_board]
-
-    test "opens neighbor safe cells if correctly flagged", %{board: board} do
-      board = %Board{cells: cells} = Board.open_neighbors(board, {1, 0})
-
-      assert %Cell{state: :open} = Map.get(cells, {2, 0})
-      assert %Cell{state: :open} = Map.get(cells, {2, 1})
-      refute board.gameover
-    end
-
-    test "opens continuous 0-mine cells", %{board: board} do
-      board = %Board{cells: cells} = Board.open_neighbors(board, {1, 0})
-
-      assert %Cell{state: :open} = Map.get(cells, {2, 0})
-      assert %Cell{state: :open} = Map.get(cells, {3, 0})
-      assert %Cell{state: :open} = Map.get(cells, {2, 1})
-      assert %Cell{state: :open} = Map.get(cells, {3, 1})
-      refute board.gameover
-    end
-
-    test "has no effect if flags is not enough", %{board: board} do
-      %Board{cells: cells} = Board.open_neighbors(board, {1, 1})
-
-      assert %Cell{state: :closed} = Map.get(cells, {2, 0})
-    end
-
-    test "has no effect if num of flags is more than num of neighbor mines", %{board: board} do
-      board = Board.flag_cell(board, {2, 0})
-      %Board{cells: cells} = Board.open_neighbors(board, {1, 0})
-
-      assert %Cell{state: :flag} = Map.get(cells, {2, 0})
-      assert %Cell{state: :closed} = Map.get(cells, {2, 1})
-    end
-
-    test "gameover if incorrectly flagged", %{board: board} do
-      board = Board.flag_cell(board, {2, 0})
-      board = Board.open_neighbors(board, {1, 1})
-
-      assert board.gameover
-    end
-
-    test "has no effect on finished game", %{board: board} do
-      board = %Board{board | gameover: true}
-      board = %Board{cells: cells} = Board.open_neighbors(board, {1, 0})
-
-      assert %Cell{state: :closed} = Map.get(cells, {2, 0})
-      assert %Cell{state: :closed} = Map.get(cells, {2, 1})
       assert board.gameover
     end
   end
