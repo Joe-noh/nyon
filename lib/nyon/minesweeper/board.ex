@@ -52,12 +52,18 @@ defmodule Nyon.Minesweeper.Board do
   end
 
   def open_cell(board = %__MODULE__{cells: cells}, {x, y}) do
-    case do_open_cell(cells, {x, y}) do
-      {:ok, cells} ->
-        %__MODULE__{board | cells: cells}
+    case Map.get(cells, {x, y}) do
+      %Cell{state: :open} ->
+        open_neighbors(board, {x, y})
 
-      :boom ->
-        gameover(board)
+      _closed_cell ->
+        case do_open_cell(cells, {x, y}) do
+          {:ok, cells} ->
+            %__MODULE__{board | cells: cells}
+
+          :boom ->
+            gameover(board)
+        end
     end
   end
 
@@ -122,11 +128,11 @@ defmodule Nyon.Minesweeper.Board do
     %__MODULE__{board | cells: cells}
   end
 
-  def open_neighbors(board = %__MODULE__{gameover: true}, _coord) do
+  defp open_neighbors(board = %__MODULE__{gameover: true}, _coord) do
     board
   end
 
-  def open_neighbors(board = %__MODULE__{cells: cells}, {x, y}) do
+  defp open_neighbors(board = %__MODULE__{cells: cells}, {x, y}) do
     case Map.get(cells, {x, y}) do
       nil ->
         board
