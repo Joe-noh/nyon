@@ -33,10 +33,12 @@ defmodule Nyon.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:distillery, "~> 2.1"},
       {:ecto_sql, "~> 3.4"},
       {:floki, ">= 0.27.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:libcluster, "~> 3.2"},
       {:mock, "~> 0.3", only: :test},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_ecto, "~> 4.1"},
@@ -47,7 +49,6 @@ defmodule Nyon.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:sptfy, "~> 0.1"},
-      {:distillery, "~> 2.1"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"}
     ]
