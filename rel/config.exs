@@ -16,7 +16,7 @@ end
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"?u}(p3<PH1?(A[C!Uir^XVeQ)DgMSEKYd[X}(]%^~kX(>N@ol@qz;s*WJVl!RJ{T"
+  set cookie: String.to_atom(System.get_env("COOKIE"))
   set vm_args: "rel/vm.args"
 end
 
