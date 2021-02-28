@@ -17,7 +17,7 @@ config :nyon, NyonWeb.Endpoint,
   secret_key_base: "xjzLWOk2AVkHfmuw8s+0DOrOPRY+66KGI1PI0o7neIcBMB3vNx1p51mSmFzFtF0E",
   render_errors: [view: NyonWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Nyon.PubSub,
-  live_view: [signing_salt: "e5RzYXfi"]
+  live_view: [signing_salt: System.get_env("LIVE_VIEW_SALT", "aKyoUG3WopIKSRopadxNRXt5QIRZ5eia")]
 
 config :nyon, :spotify,
   client_id: System.get_env("SPOTIFY_CLIENT_ID"),
