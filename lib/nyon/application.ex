@@ -18,7 +18,8 @@ defmodule Nyon.Application do
       {Phoenix.PubSub, name: Nyon.PubSub},
       # Start the Endpoint (http/https)
       NyonWeb.Endpoint,
-      Nyon.Minesweeper.Server
+      Nyon.Minesweeper.Server,
+      Nyon.Jukebox.QueueServer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
