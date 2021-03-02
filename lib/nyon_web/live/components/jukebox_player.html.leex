@@ -1,5 +1,5 @@
 <section>
-  <%= for entry <- @queue do %>
-    <span><%= entry.uri %></span><br />
+  <%= for track <- @tracks do %>
+    <img src="<%= track.image %>">
   <% end %>
 </section>

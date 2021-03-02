@@ -1,16 +1,21 @@
 defmodule NyonWeb.Components.JukeboxPlayer do
   use Phoenix.LiveComponent
 
-  alias Nyon.Jukebox.QueueServer
-
   @impl true
   def mount(socket) do
-    if user = Map.get(socket.assigns, :current_user) do
-      :ok = QueueServer.enqueue_recommends(user.spotify_account)
-    end
+    Process.send_after(self(), :enqueue, 200)
 
-    queue = QueueServer.queue()
+    {:ok, assign(socket, :queue, [])}
+  end
 
-    {:ok, assign(socket, :queue, queue)}
+  @impl true
+  def update(%{queue: queue}, socket) do
+    tracks = Enum.map(queue, fn track ->
+      image = Enum.min_by(track.album.images, fn image -> image.width end)
+
+      %{image: image.url}
+    end)
+
+    {:ok, assign(socket, :tracks, tracks)}
   end
 end

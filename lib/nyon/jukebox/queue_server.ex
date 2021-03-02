@@ -1,7 +1,7 @@
 defmodule Nyon.Jukebox.QueueServer do
   use GenServer
 
-  alias Nyon.{Identities, Jukebox}
+  alias Nyon.Jukebox
 
   @name {:global, Nyon.Jukebox.QueueServer}
 
@@ -40,7 +40,7 @@ defmodule Nyon.Jukebox.QueueServer do
       {:ok, tracks} ->
         {:reply, :ok, Map.put(state, :queue, tracks)}
 
-      {:error, _} ->
+      {:error, _reason} ->
         {:reply, :ok, state}
     end
   end
