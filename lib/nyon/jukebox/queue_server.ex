@@ -1,6 +1,8 @@
 defmodule Nyon.Jukebox.QueueServer do
   use GenServer
 
+  alias Nyon.{Identities, Jukebox}
+
   @name {:global, Nyon.Jukebox.QueueServer}
 
   def start_link(_) do
@@ -11,8 +13,12 @@ defmodule Nyon.Jukebox.QueueServer do
     GenServer.call(@name, :queue)
   end
 
-  def bulk_enqueue(spotify_account) do
-    GenServer.call(@name, {:bulk_enqueue, spotify_account})
+  def clear_queue do
+    GenServer.call(@name, :clear_queue)
+  end
+
+  def enqueue_recommends(spotify_account) do
+    GenServer.call(@name, {:enqueue_recommends, spotify_account})
   end
 
   # callbacks
@@ -25,18 +31,21 @@ defmodule Nyon.Jukebox.QueueServer do
     {:reply, queue, state}
   end
 
-  def handle_call({:bulk_enqueue, _spotify_account}, _from, state = %{queue: []}) do
-    queue = [
-      %Sptfy.Object.FullTrack{uri: "spotify:track:2hKtLq0OFHoK7ftAqn456x"},
-      %Sptfy.Object.FullTrack{uri: "spotify:track:5pZdWghXts7etZoYbL3WPU"}
-    ]
-
-    state = Map.put(state, :queue, queue)
-
-    {:reply, :ok, state}
+  def handle_call(:clear_queue, _from, state) do
+    {:reply, :ok, Map.put(state, :queue, [])}
   end
 
-  def handle_call({:bulk_enqueue, _spotify_account}, _from, state) do
+  def handle_call({:enqueue_recommends, spotify_account}, _from, state = %{queue: []}) do
+    case Jukebox.Spotify.get_recommends(spotify_account) do
+      {:ok, tracks} ->
+        {:reply, :ok, Map.put(state, :queue, tracks)}
+
+      {:error, _} ->
+        {:reply, :ok, state}
+    end
+  end
+
+  def handle_call({:enqueue_recommends, _spotify_account}, _from, state) do
     {:reply, :ok, state}
   end
 end

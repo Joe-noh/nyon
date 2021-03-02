@@ -6,7 +6,7 @@ defmodule NyonWeb.Components.JukeboxPlayer do
   @impl true
   def mount(socket) do
     if user = Map.get(socket.assigns, :current_user) do
-      :ok = QueueServer.bulk_enqueue(user.spotify_account)
+      :ok = QueueServer.enqueue_recommends(user.spotify_account)
     end
 
     queue = QueueServer.queue()
