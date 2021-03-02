@@ -23,7 +23,7 @@ config :nyon, :spotify,
   client_id: System.get_env("SPOTIFY_CLIENT_ID"),
   client_secret: System.get_env("SPOTIFY_CLIENT_SECRET"),
   callback_url: System.get_env("SPOTIFY_CALLBACK_URL", "http://localhost:4000/spotify/callback"),
-  scopes: ~w[user-read-playback-state user-modify-playback-state]
+  scopes: ~w[user-read-playback-state user-modify-playback-state user-top-read]
 
 # Configures Elixir's Logger
 config :logger, :console,
