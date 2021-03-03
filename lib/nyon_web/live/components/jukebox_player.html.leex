@@ -1,5 +1,6 @@
-<section>
-  <%= for track <- @tracks do %>
-    <img src="<%= track.image %>">
+<section class="player">
+  <%= if @track do %>
+    <img class="cover-image" src="<%= @track.image %>">
+    <span class="title"><%= @track.title %> - <%= @track.artist %></span>
   <% end %>
 </section>

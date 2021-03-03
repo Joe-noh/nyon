@@ -1,0 +1,20 @@
+.player {
+  max-width: 90%;
+  width: 500px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  .cover-image {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-right: .8rem;
+  }
+
+  .title {
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

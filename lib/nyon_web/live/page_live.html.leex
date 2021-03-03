@@ -1,3 +1,13 @@
 <%= live_component(@socket, NyonWeb.Components.MinesweeperBoard, id: 1) %>
 
-<%= live_component(@socket, NyonWeb.Components.JukeboxPlayer, id: 1, queue: @queue) %>
+<section class="bottom-bar">
+  <div class="bottom-bar__content">
+    <%= if @current_user do %>
+      <%= live_component(@socket, NyonWeb.Components.JukeboxPlayer, id: 1, queue: @queue) %>
+    <% else %>
+      <sl-button class="signup_button" href="<%= Routes.authorization_path(@socket, :authorize) %>" phx-update="ignore">
+        Signin with Spotify
+      </sl-button>
+    <% end %>
+  </div>
+</section>

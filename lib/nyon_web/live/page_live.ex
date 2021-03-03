@@ -34,11 +34,11 @@ defmodule NyonWeb.PageLive do
   defp assign_current_user(socket, %{"current_user_id" => user_id}) do
     case Nyon.Identities.find_user(user_id) do
       {:ok, user} -> assign(socket, :current_user, user)
-      _error -> socket
+      _error -> assign(socket, :current_user, nil)
     end
   end
 
   defp assign_current_user(socket, _session) do
-    socket
+    assign(socket, :current_user, nil)
   end
 end

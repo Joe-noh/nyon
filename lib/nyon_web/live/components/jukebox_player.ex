@@ -9,13 +9,20 @@ defmodule NyonWeb.Components.JukeboxPlayer do
   end
 
   @impl true
-  def update(%{queue: queue}, socket) do
-    tracks = Enum.map(queue, fn track ->
-      image = Enum.min_by(track.album.images, fn image -> image.width end)
+  def update(%{queue: [track | _]}, socket) do
+    image = Enum.min_by(track.album.images, fn image -> image.width end)
+    artist = Enum.map(track.artists, fn artist -> artist.name end) |> Enum.join(", ")
 
-      %{image: image.url}
-    end)
+    track = %{
+      title: track.name,
+      artist: artist,
+      image: image.url
+    }
 
-    {:ok, assign(socket, :tracks, tracks)}
+    {:ok, assign(socket, :track, track)}
+  end
+
+  def update(%{queue: []}, socket) do
+    {:ok, assign(socket, :track, nil)}
   end
 end
