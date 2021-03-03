@@ -5,7 +5,7 @@ defmodule NyonWeb.Components.JukeboxPlayer do
   def mount(socket) do
     Process.send_after(self(), :enqueue, 200)
 
-    {:ok, assign(socket, :queue, [])}
+    {:ok, socket}
   end
 
   @impl true
