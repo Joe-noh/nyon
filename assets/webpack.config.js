@@ -47,7 +47,7 @@ module.exports = (env, options) => {
       new CopyPlugin({
         patterns: [
           { from: 'static/', to: '../' },
-          { from: 'node_modules/@shoelace-style/shoelace/dist/shoelace/icons', to: '../icons' },
+          { from: 'node_modules/@shoelace-style/shoelace/dist/assets', to: '../shoelace/assets' },
         ]
       })
     ]
