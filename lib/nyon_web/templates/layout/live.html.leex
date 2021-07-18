@@ -1,10 +1,10 @@
 <main role="main" class="container">
-  <sl-alert type="primary" open="<%= Map.has_key?(@flash, "info") %>" closable>
+  <sl-alert type="primary" <%= if Map.has_key?(@flash, "info"), do: "open" %> closable>
     <sl-icon slot="icon" name="info-circle"></sl-icon>
     <%= live_flash(@flash, :info) %>
   </sl-alert>
 
-  <sl-alert type="warning" open="<%= Map.has_key?(@flash, "error") %>" closable>
+  <sl-alert type="warning" <%= if Map.has_key?(@flash, "error"), do: "open" %> closable>
     <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
     <%= live_flash(@flash, :error) %>
   </sl-alert>
