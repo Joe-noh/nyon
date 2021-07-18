@@ -1,5 +1,9 @@
-import '@shoelace-style/shoelace/dist/shoelace/shoelace.css'
-import { defineCustomElements, setAssetPath } from '@shoelace-style/shoelace'
+import '@shoelace-style/shoelace/dist/themes/base.css'
 
-setAssetPath(location.href)
-defineCustomElements()
+import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert'
+import SlButton from '@shoelace-style/shoelace/dist/components/button/button'
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon'
+
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path'
+
+setBasePath('/shoelace')
