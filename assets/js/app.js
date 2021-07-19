@@ -3,6 +3,7 @@
 // its own CSS file.
 import "../css/app.scss"
 import "./shoelace"
+import { setupPlayer } from './spotify'
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -48,3 +49,5 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
+setupPlayer()

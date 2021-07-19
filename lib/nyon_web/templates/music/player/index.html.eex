@@ -1,0 +1,4 @@
+<div id="token" data-token="<%= @account.access_token %>"></div>
+
+<button id="play">PLAY</button>
+<button id="pause">STOP</button>

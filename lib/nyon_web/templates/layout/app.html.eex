@@ -17,3 +17,5 @@
 
   <%= @inner_content %>
 </main>
+
+ <script src="https://sdk.scdn.co/spotify-player.js"></script>

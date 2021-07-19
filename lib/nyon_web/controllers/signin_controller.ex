@@ -7,7 +7,7 @@ defmodule NyonWeb.SigninController do
         conn |> render("index.html")
 
       _user ->
-        conn |> redirect(to: "/")
+        conn |> redirect(to: Routes.player_path(conn, :index))
     end
   end
 end
