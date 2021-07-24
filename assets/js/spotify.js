@@ -97,17 +97,29 @@ export function setupPlayer() {
     player.connect()
   }
 
-  document.querySelector('#play').addEventListener('click', async () => {
+  const playButton = document.querySelector('#play')
+  const pauseButton = document.querySelector('#pause')
+
+  playButton.style.display = 'block'
+  pauseButton.style.display = 'none'
+
+  document.querySelector('#play').addEventListener('click', async (event) => {
     const trackId = '3za3bQrlpdEwcT2C4t5Cag'
 
     window.AppState.analysis = await Music.analysis(trackId)
 
     await Music.play(trackId, window.AppState.deviceId)
+
+    playButton.style.display = 'none'
+    pauseButton.style.display = 'block'
   })
 
   document.querySelector('#pause').addEventListener('click', async () => {
     await Music.pause(window.AppState.deviceId)
 
     window.AppState.singing = false
+
+    playButton.style.display = 'block'
+    pauseButton.style.display = 'none'
   })
 }

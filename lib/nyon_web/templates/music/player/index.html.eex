@@ -1,7 +1,9 @@
 <div id="token" data-token="<%= @account.access_token %>"></div>
 
-<button id="play">PLAY</button>
-<button id="pause">STOP</button>
-
 <div id="circle_beat" class="circle"></div>
 <div id="circle_bar" class="circle"></div>
+
+<div class="player">
+  <sl-icon-button id="play" class="button" name="play" label="Play"></sl-icon-button>
+  <sl-icon-button id="pause" class="button" name="pause" label="Pause"></sl-icon-button>
+</div>
