@@ -1,9 +1,11 @@
 import * as Music from './music'
 
+// 状態管理がしんどくて泣きそうになったら何かやり方を考える
 window.AppState = {
   spotifyToken: document.querySelector('#token').dataset.token,
   deviceId: null,
   singing: false,
+  loading: false,
   analysis: {}
 }
 
@@ -103,23 +105,43 @@ export function setupPlayer() {
   playButton.style.display = 'block'
   pauseButton.style.display = 'none'
 
-  document.querySelector('#play').addEventListener('click', async (event) => {
+  playButton.addEventListener('click', async () => {
+    if (window.AppState.loading) {
+      return
+    }
+
     const trackId = '3za3bQrlpdEwcT2C4t5Cag'
 
-    window.AppState.analysis = await Music.analysis(trackId)
+    window.AppState.loading = true
 
-    await Music.play(trackId, window.AppState.deviceId)
+    try {
+      window.AppState.analysis = await Music.analysis(trackId)
 
-    playButton.style.display = 'none'
-    pauseButton.style.display = 'block'
+      await Music.play(trackId, window.AppState.deviceId)
+
+      playButton.style.display = 'none'
+      pauseButton.style.display = 'block'
+    } finally {
+      window.AppState.loading = false
+    }
   })
 
-  document.querySelector('#pause').addEventListener('click', async () => {
-    await Music.pause(window.AppState.deviceId)
+  pauseButton.addEventListener('click', async () => {
+    if (window.AppState.loading) {
+      return
+    }
 
-    window.AppState.singing = false
+    window.AppState.loading = true
 
-    playButton.style.display = 'block'
-    pauseButton.style.display = 'none'
+    try {
+      await Music.pause(window.AppState.deviceId)
+
+      window.AppState.singing = false
+
+      playButton.style.display = 'block'
+      pauseButton.style.display = 'none'
+    } finally {
+      window.AppState.loading = false
+    }
   })
 }
