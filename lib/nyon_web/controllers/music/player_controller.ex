@@ -25,12 +25,14 @@ defmodule NyonWeb.Music.PlayerController do
       conn |> json(analysis)
     else
       _error ->
-        conn |> json(%{}) # TODO
+        # TODO
+        conn |> json(%{})
     end
   end
 
   def play(conn, %{"device_id" => device_id, "id" => id}) do
     user = conn.assigns.current_user
+
     params = [
       device_id: device_id,
       uris: ["spotify:track:#{id}"]
@@ -41,12 +43,14 @@ defmodule NyonWeb.Music.PlayerController do
       conn |> json(%{})
     else
       _error ->
-        conn |> json(%{}) # TODO
+        # TODO
+        conn |> json(%{})
     end
   end
 
   def pause(conn, %{"device_id" => device_id}) do
     user = conn.assigns.current_user
+
     params = [
       device_id: device_id
     ]
@@ -56,7 +60,8 @@ defmodule NyonWeb.Music.PlayerController do
       conn |> json(%{})
     else
       _error ->
-        conn |> json(%{}) # TODO
+        # TODO
+        conn |> json(%{})
     end
   end
 end

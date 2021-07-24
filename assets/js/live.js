@@ -1,8 +1,8 @@
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
-import "../css/live.scss"
-import "./shoelace"
+import '../css/live.scss'
+import './shoelace'
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -13,12 +13,12 @@ import "./shoelace"
 //     import {Socket} from "phoenix"
 //     import socket from "./socket"
 //
-import "phoenix_html"
-import {Socket} from "phoenix"
-import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
+import 'phoenix_html'
+import { Socket } from 'phoenix'
+import NProgress from 'nprogress'
+import { LiveSocket } from 'phoenix_live_view'
 
-const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 const hooks = {
   Cell: {
     mounted() {
@@ -34,11 +34,11 @@ const hooks = {
   }
 }
 
-const liveSocket = new LiveSocket("/live", Socket, { params: { _csrf_token: csrfToken }, hooks })
+const liveSocket = new LiveSocket('/live', Socket, { params: { _csrf_token: csrfToken }, hooks })
 
 // Show progress bar on live navigation and form submits
-window.addEventListener("phx:page-loading-start", info => NProgress.start())
-window.addEventListener("phx:page-loading-stop", info => NProgress.done())
+window.addEventListener('phx:page-loading-start', info => NProgress.start())
+window.addEventListener('phx:page-loading-stop', info => NProgress.done())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
