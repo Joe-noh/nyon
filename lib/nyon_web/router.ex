@@ -27,8 +27,9 @@ defmodule NyonWeb.Router do
 
     scope "/music", Music do
       get "/", PlayerController, :index
-      put "/play", PlayerController, :play
+      put "/play/:id", PlayerController, :play
       put "/pause", PlayerController, :pause
+      post "/analysis/:id", PlayerController, :analysis
     end
 
     live "/", PageLive, :index

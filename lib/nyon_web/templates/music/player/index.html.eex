@@ -2,3 +2,6 @@
 
 <button id="play">PLAY</button>
 <button id="pause">STOP</button>
+
+<div id="circle_beat" class="circle"></div>
+<div id="circle_bar" class="circle"></div>

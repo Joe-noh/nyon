@@ -17,11 +17,23 @@ defmodule NyonWeb.Music.PlayerController do
     end
   end
 
-  def play(conn, %{"device_id" => device_id}) do
+  def analysis(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
+
+    with {:ok, account} <- Identities.refresh_if_expired(user.spotify_account),
+         {:ok, analysis} <- Sptfy.Track.get_audio_analysis(account.access_token, id: id) do
+      conn |> json(analysis)
+    else
+      _error ->
+        conn |> json(%{}) # TODO
+    end
+  end
+
+  def play(conn, %{"device_id" => device_id, "id" => id}) do
     user = conn.assigns.current_user
     params = [
       device_id: device_id,
-      uris: ["spotify:track:06Qha323s06okpZ4LmMX7P"]
+      uris: ["spotify:track:#{id}"]
     ]
 
     with {:ok, account} <- Identities.refresh_if_expired(user.spotify_account),
