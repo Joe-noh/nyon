@@ -1,15 +1,10 @@
+import * as Music from './music'
+
 window.AppState = {
   spotifyToken: document.querySelector('#token').dataset.token,
   deviceId: null,
   singing: false,
   analysis: {}
-}
-
-function headers() {
-  return {
-    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-    'Content-Type': 'application/json',
-  }
 }
 
 function sing() {
@@ -102,29 +97,16 @@ export function setupPlayer() {
     player.connect()
   }
 
-  const songId = '3za3bQrlpdEwcT2C4t5Cag'
-
   document.querySelector('#play').addEventListener('click', async () => {
-    const analysis = await fetch(`/music/analysis/${songId}`, {
-      method: 'POST',
-      headers: headers()
-    }).then(res => res.json())
+    const trackId = '3za3bQrlpdEwcT2C4t5Cag'
 
-    window.AppState.analysis = analysis
+    window.AppState.analysis = await Music.analysis(trackId)
 
-    await fetch(`/music/play/${songId}`, {
-      method: 'PUT',
-      headers: headers(),
-      body: JSON.stringify({ device_id: window.AppState.deviceId }),
-    })
+    await Music.play(trackId, window.AppState.deviceId)
   })
 
   document.querySelector('#pause').addEventListener('click', async () => {
-    await fetch('/music/pause', {
-      method: 'PUT',
-      headers: headers(),
-      body: JSON.stringify({ device_id: window.AppState.deviceId }),
-    })
+    await Music.pause(window.AppState.deviceId)
 
     window.AppState.singing = false
   })
