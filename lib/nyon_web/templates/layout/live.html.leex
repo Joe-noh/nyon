@@ -1,13 +1,29 @@
-<main role="main" class="container">
-  <sl-alert type="primary" <%= if Map.has_key?(@flash, "info"), do: "open" %> closable>
-    <sl-icon slot="icon" name="info-circle"></sl-icon>
-    <%= live_flash(@flash, :info) %>
-  </sl-alert>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag assigns[:page_title] || "Nyon" %>
+    <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@socket, "/css/live.css") %>"/>
+  </head>
 
-  <sl-alert type="warning" <%= if Map.has_key?(@flash, "error"), do: "open" %> closable>
-    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-    <%= live_flash(@flash, :error) %>
-  </sl-alert>
+  <body class="background">
+    <main role="main" class="container">
+      <sl-alert type="primary" <%= if Map.has_key?(@flash, "info"), do: "open" %> closable>
+        <sl-icon slot="icon" name="info-circle"></sl-icon>
+        <%= live_flash(@flash, :info) %>
+      </sl-alert>
 
-  <%= @inner_content %>
-</main>
+      <sl-alert type="warning" <%= if Map.has_key?(@flash, "error"), do: "open" %> closable>
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <%= live_flash(@flash, :error) %>
+      </sl-alert>
+
+      <%= @inner_content %>
+    </main>
+
+    <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@socket, "/js/live.js") %>"></script>
+  </body>
+</html>

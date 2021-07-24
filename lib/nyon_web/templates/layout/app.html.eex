@@ -1,19 +1,36 @@
-<main role="main">
-  <div class="alert">
-    <%= if get_flash(@conn, :info) do %>
-      <sl-alert class="alert-entry" type="primary" open closable>
-        <sl-icon slot="icon" name="info-circle"></sl-icon>
-        <%= get_flash(@conn, :info) %>
-      </sl-alert>
-    <% end %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag assigns[:page_title] || "Nyon" %>
+    <link rel="stylesheet" href='<%= Routes.static_path(@conn, "/css/app.css") %>' />
+  </head>
 
-    <%= if get_flash(@conn, :error) do %>
-      <sl-alert class="alert-entry" type="warning" open closable>
-        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
-        <%= get_flash(@conn, :error) %>
-      </sl-alert>
-    <% end %>
-  </div>
+  <body class="background">
+    <main role="main">
+      <div class="alert">
+        <%= if get_flash(@conn, :info) do %>
+          <sl-alert class="alert-entry" type="primary" open closable>
+            <sl-icon slot="icon" name="info-circle"></sl-icon>
+            <%= get_flash(@conn, :info) %>
+          </sl-alert>
+        <% end %>
 
-  <%= @inner_content %>
-</main>
+        <%= if get_flash(@conn, :error) do %>
+          <sl-alert class="alert-entry" type="warning" open closable>
+            <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+            <%= get_flash(@conn, :error) %>
+          </sl-alert>
+        <% end %>
+      </div>
+
+      <%= @inner_content %>
+    </main>
+
+    <script src='<%= Routes.static_path(@conn, "/js/app.js") %>'></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  </body>
+</html>

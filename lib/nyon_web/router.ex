@@ -2,10 +2,9 @@ defmodule NyonWeb.Router do
   use NyonWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "json"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {NyonWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Nyon.CurrentUserPlug
@@ -25,13 +24,15 @@ defmodule NyonWeb.Router do
       get "/callback", AuthorizationController, :callback
     end
 
+    scope "/music", Music do
+      get "/", PlayerController, :index
+      put "/play/:id", PlayerController, :play
+      put "/pause", PlayerController, :pause
+      post "/analysis/:id", PlayerController, :analysis
+    end
+
     live "/", PageLive, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", NyonWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #
