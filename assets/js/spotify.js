@@ -1,69 +1,4 @@
 import * as Music from './music'
-import {
-  Engine,
-  Scene,
-  HemisphericLight,
-  SpotLight,
-  MeshBuilder,
-  StandardMaterial,
-  ShadowGenerator,
-  SceneLoader,
-  Color3,
-  Vector3,
-  ArcRotateCamera,
-} from '@babylonjs/core'
-import '@babylonjs/loaders'
-import speaker from '../gltf/speaker.gltf'
-
-const canvas = document.getElementById('canvas')
-
-const engine = new Engine(canvas)
-const scene = new Scene(engine)
-scene.clearColor = Color3.FromHexString('#222222')
-
-const camera = new ArcRotateCamera('camera', 2 * Math.PI / 3, Math.PI / 3, 6, Vector3.Zero(), scene)
-
-const hemiLight = new HemisphericLight('hemiLight', Vector3.Up(), scene)
-hemiLight.intensity = 0.5
-
-const spotLight = new SpotLight('spotLight', new Vector3(3, 10, 2), new Vector3(-3, -10, -2), 1.5, 10, scene)
-spotLight.intensity = 0.9
-spotLight.diffuse = Color3.White()
-
-camera.target = new Vector3(0, 1, 0)
-
-const floor = MeshBuilder.CreateGround('floor', { width: 10, height: 10 })
-const floorMaterial = new StandardMaterial('floorMaterial1', scene)
-
-let floorColorsIndex = 0
-const floorColors = ['#4B5D67', '#322F3D', '#59405C', '#87556F'].map(hex => {
-  return Color3.FromHexString(hex)
-})
-
-floorMaterial.diffuseColor = floorColors[floorColorsIndex]
-floor.material = floorMaterial
-floor.receiveShadows = true
-
-const shadowGenerator = new ShadowGenerator(1024, spotLight)
-shadowGenerator.useBlurExponentialShadowMap = true
-shadowGenerator.blurKernel = 64
-
-let animation
-
-SceneLoader.ImportMesh('', speaker, undefined, scene, (meshes, particleSystems, skeletons, animations) => {
-  shadowGenerator.addShadowCaster(meshes[1])
-  animation = animations[0]
-
-  animation.stop()
-})
-
-engine.runRenderLoop(() => {
-  scene.render()
-})
-
-window.addEventListener('resize', () => {
-  engine.resize()
-})
 
 // 状態管理がしんどくて泣きそうになったら何かやり方を考える
 window.AppState = {
@@ -74,59 +9,57 @@ window.AppState = {
   analysis: {}
 }
 
-function sing() {
+const playButton = document.querySelector('#player-play')
+const stopButton = document.querySelector('#player-stop')
+
+function sing(onBeat, onSection) {
   if (window.AppState.singing) {
     const now = new Date() - window.AppState.startedAt
 
-    processBeats(now, (duration) => {
-      animation.start(false, 2 / duration)
-    })
-    processBars(now, (duration) => {
-      floorColorsIndex = (floorColorsIndex + 1) % floorColors.length
-      floorMaterial.diffuseColor = floorColors[floorColorsIndex]
-    })
+    processBeats(now, (duration) => onBeat(duration))
+    processSections(now, () => onSection())
 
-    setTimeout(sing, 10)
+    setTimeout(() => sing(onBeat, onSection), 10)
   }
 }
 
-function processBeats(timestamp, cb) {
+function processBeats(timestamp, onBeat) {
   const beats = window.AppState.analysis.beats
   const index = beats.findIndex(b => 1000 * b.start < timestamp)
 
   if (index !== -1) {
     const beat = beats[index]
-    const circle = document.querySelector('#circle_beat')
-    circle.animate([
-      { transform: `scaleX(${1 + beat.confidence})` },
-      { transform: 'scale(1.0)'}
-    ], 1000 * beat.duration)
 
-    cb(beat.duration)
-
+    onBeat(beat.duration)
     window.AppState.analysis.beats.splice(index, 1)
   }
 }
 
-function processBars(timestamp, cb) {
+function processSections(timestamp, onSection) {
   const bars = window.AppState.analysis.sections
   const index = bars.findIndex(b => 1000 * b.start < timestamp)
 
   if (index !== -1) {
     const bar = bars[index]
-    const circle = document.querySelector('#circle_bar')
-    circle.animate([
-      { transform: `scaleY(${1 + bar.confidence})` },
-      { transform: 'scale(1.0)'}
-    ], 1000 * bar.duration)
 
-    cb(bar.duration)
-
+    onSection(bar.duration)
     window.AppState.analysis.sections.splice(index, 1)
   }
 }
 
-export function setupPlayer() {
+function showPlayButton() {
+  playButton.style.display = 'block'
+  stopButton.style.display = 'none'
+}
+
+function showStopButton() {
+  playButton.style.display = 'none'
+  stopButton.style.display = 'block'
+}
+
+export function setupPlayer({ onBeat, onSection }) {
+  showPlayButton()
+
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
       name: 'Web Player',
@@ -150,7 +83,7 @@ export function setupPlayer() {
           window.AppState.singing = true
           window.AppState.startedAt = new Date() - state.position
 
-          sing()
+          sing(onBeat, onSection)
         }
       }
     })
@@ -159,7 +92,7 @@ export function setupPlayer() {
     player.addListener('ready', ({ device_id }) => {
       console.log('Ready with Device ID', device_id)
 
-      player.setVolume(0.2)
+      player.setVolume(0.1)
 
       window.AppState.deviceId = device_id
     })
@@ -172,12 +105,6 @@ export function setupPlayer() {
     // Connect to the player!
     player.connect()
   }
-
-  const playButton = document.querySelector('#player-play')
-  const pauseButton = document.querySelector('#player-stop')
-
-  playButton.style.display = 'block'
-  pauseButton.style.display = 'none'
 
   playButton.addEventListener('click', async () => {
     if (window.AppState.loading) {
@@ -193,14 +120,13 @@ export function setupPlayer() {
 
       await Music.play(trackId, window.AppState.deviceId)
 
-      playButton.style.display = 'none'
-      pauseButton.style.display = 'block'
+      showStopButton()
     } finally {
       window.AppState.loading = false
     }
   })
 
-  pauseButton.addEventListener('click', async () => {
+  stopButton.addEventListener('click', async () => {
     if (window.AppState.loading) {
       return
     }
@@ -212,8 +138,7 @@ export function setupPlayer() {
 
       window.AppState.singing = false
 
-      playButton.style.display = 'block'
-      pauseButton.style.display = 'none'
+      showPlayButton()
     } finally {
       window.AppState.loading = false
     }
