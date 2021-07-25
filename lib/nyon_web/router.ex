@@ -17,6 +17,7 @@ defmodule NyonWeb.Router do
   scope "/", NyonWeb do
     pipe_through :browser
 
+    get "/", TopController, :index
     get "/signin", SigninController, :index
 
     scope "/spotify", Spotify do
@@ -30,8 +31,6 @@ defmodule NyonWeb.Router do
       put "/pause", PlayerController, :pause
       post "/analysis/:id", PlayerController, :analysis
     end
-
-    live "/", PageLive, :index
   end
 
   # Enables LiveDashboard only for development
