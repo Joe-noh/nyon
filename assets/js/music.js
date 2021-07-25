@@ -17,7 +17,14 @@ export async function request({ method, path, body }) {
   const res = await fetch(path, params({ method, body }))
 
   if (res.ok) {
-    return res.json()
+    const json = await res.json()
+
+    if (Object.keys(json).length === 0) {
+      // これはサボり
+      throw new Error('Something went wrong')
+    } else {
+      return json
+    }
   }
 }
 

@@ -121,6 +121,8 @@ export function setupPlayer({ onBeat, onSection }) {
       await Music.play(trackId, window.AppState.deviceId)
 
       showStopButton()
+    } catch (e) {
+      console.log(e)
     } finally {
       window.AppState.loading = false
     }
@@ -139,6 +141,8 @@ export function setupPlayer({ onBeat, onSection }) {
       window.AppState.singing = false
 
       showPlayButton()
+    } catch (e) {
+      console.log(e)
     } finally {
       window.AppState.loading = false
     }
