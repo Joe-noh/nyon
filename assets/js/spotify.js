@@ -173,8 +173,8 @@ export function setupPlayer() {
     player.connect()
   }
 
-  const playButton = document.querySelector('#play')
-  const pauseButton = document.querySelector('#pause')
+  const playButton = document.querySelector('#player-play')
+  const pauseButton = document.querySelector('#player-stop')
 
   playButton.style.display = 'block'
   pauseButton.style.display = 'none'
