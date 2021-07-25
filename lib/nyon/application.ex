@@ -6,10 +6,7 @@ defmodule Nyon.Application do
   use Application
 
   def start(_type, _args) do
-    topologies = Application.get_env(:libcluster, :topologies, [])
-
     children = [
-      {Cluster.Supervisor, [topologies, [name: Nyon.ClusterSupervisor]]},
       # Start the Ecto repository
       Nyon.Repo,
       # Start the Telemetry supervisor

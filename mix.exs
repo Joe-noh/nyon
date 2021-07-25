@@ -38,7 +38,6 @@ defmodule Nyon.MixProject do
       {:floki, ">= 0.27.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:libcluster, "~> 3.2"},
       {:mock, "~> 0.3", only: :test},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_ecto, "~> 4.1"},
