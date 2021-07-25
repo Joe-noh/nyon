@@ -1,4 +1,59 @@
 import * as Music from './music'
+import {
+  Engine,
+  Scene,
+  HemisphericLight,
+  SpotLight,
+  MeshBuilder,
+  StandardMaterial,
+  Animation,
+  EasingFunction,
+  CircleEase,
+  Color3,
+  Vector3,
+  ArcRotateCamera,
+} from '@babylonjs/core'
+
+const canvas = document.getElementById('canvas')
+
+const engine = new Engine(canvas)
+const scene = new Scene(engine)
+scene.clearColor = Color3.FromHexString('#222222')
+
+const camera = new ArcRotateCamera('camera', 1, 1, 3, Vector3.Zero(), scene)
+camera.attachControl(canvas, true)
+
+const hemiLight = new HemisphericLight('hemiLight', Vector3.Up(), scene)
+hemiLight.intensity = 0.3
+
+const spotLight = new SpotLight('spotLight', new Vector3(0, 10, 2), new Vector3(0, -10, -2), 10, 100, scene)
+spotLight.intensity = 0.8
+
+const cube = MeshBuilder.CreateBox('cube', {}, scene)
+const cubeMaterial = new StandardMaterial('cubeMaterial', scene)
+cubeMaterial.diffuseColor = Color3.FromHexString('#cc3322')
+cube.material = cubeMaterial
+cube.setPivotPoint(new Vector3(0.5, -0.5, 0.5))
+
+camera.target = Vector3.Zero()
+
+const frameRate = 10
+const animation = new Animation('beat', 'scaling.y', frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT)
+
+const easingFunction = new CircleEase()
+easingFunction.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+
+animation.setKeys([
+  { frame: 0, value: 1 },
+  { frame: frameRate / 2, value: 1.1 },
+  { frame: 2 * frameRate, value: 1 },
+])
+
+cube.animations.push(animation)
+
+engine.runRenderLoop(() => {
+  scene.render()
+})
 
 // 状態管理がしんどくて泣きそうになったら何かやり方を考える
 window.AppState = {
@@ -13,14 +68,16 @@ function sing() {
   if (window.AppState.singing) {
     const now = new Date() - window.AppState.startedAt
 
-    processBeats(now)
+    processBeats(now, (duration) => {
+      scene.beginAnimation(cube, 0, 2 * frameRate, false, 2 / duration)
+    })
     processBars(now)
 
     setTimeout(sing, 10)
   }
 }
 
-function processBeats(timestamp) {
+function processBeats(timestamp, cb) {
   const beats = window.AppState.analysis.beats
   const index = beats.findIndex(b => 1000 * b.start < timestamp)
 
@@ -31,6 +88,8 @@ function processBeats(timestamp) {
       { transform: `scaleX(${1 + beat.confidence})` },
       { transform: 'scale(1.0)'}
     ], 1000 * beat.duration)
+
+    cb(beat.duration)
 
     window.AppState.analysis.beats.splice(index, 1)
   }
@@ -110,7 +169,7 @@ export function setupPlayer() {
       return
     }
 
-    const trackId = '3za3bQrlpdEwcT2C4t5Cag'
+    const trackId = '2nuta42lbR00JoPn8aw5A5'
 
     window.AppState.loading = true
 
