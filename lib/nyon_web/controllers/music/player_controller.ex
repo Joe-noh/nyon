@@ -40,7 +40,7 @@ defmodule NyonWeb.Music.PlayerController do
 
     with {:ok, account} <- Identities.refresh_if_expired(user.spotify_account),
          :ok <- Sptfy.Player.play(account.access_token, params) do
-      conn |> json(%{})
+      conn |> json(%{status: "OK"})
     else
       _error ->
         # TODO
@@ -57,7 +57,7 @@ defmodule NyonWeb.Music.PlayerController do
 
     with {:ok, account} <- Identities.refresh_if_expired(user.spotify_account),
          :ok <- Sptfy.Player.pause(account.access_token, params) do
-      conn |> json(%{})
+      conn |> json(%{status: "OK"})
     else
       _error ->
         # TODO
