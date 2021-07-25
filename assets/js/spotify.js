@@ -6,13 +6,14 @@ import {
   SpotLight,
   MeshBuilder,
   StandardMaterial,
-  Animation,
-  EasingFunction,
-  CircleEase,
+  ShadowGenerator,
+  SceneLoader,
   Color3,
   Vector3,
   ArcRotateCamera,
 } from '@babylonjs/core'
+import '@babylonjs/loaders'
+import speaker from '../gltf/speaker.gltf'
 
 const canvas = document.getElementById('canvas')
 
@@ -20,39 +21,48 @@ const engine = new Engine(canvas)
 const scene = new Scene(engine)
 scene.clearColor = Color3.FromHexString('#222222')
 
-const camera = new ArcRotateCamera('camera', 1, 1, 3, Vector3.Zero(), scene)
-camera.attachControl(canvas, true)
+const camera = new ArcRotateCamera('camera', 2 * Math.PI / 3, Math.PI / 3, 6, Vector3.Zero(), scene)
 
 const hemiLight = new HemisphericLight('hemiLight', Vector3.Up(), scene)
-hemiLight.intensity = 0.3
+hemiLight.intensity = 0.5
 
-const spotLight = new SpotLight('spotLight', new Vector3(0, 10, 2), new Vector3(0, -10, -2), 10, 100, scene)
-spotLight.intensity = 0.8
+const spotLight = new SpotLight('spotLight', new Vector3(3, 10, 2), new Vector3(-3, -10, -2), 1.5, 10, scene)
+spotLight.intensity = 0.9
+spotLight.diffuse = Color3.White()
 
-const cube = MeshBuilder.CreateBox('cube', {}, scene)
-const cubeMaterial = new StandardMaterial('cubeMaterial', scene)
-cubeMaterial.diffuseColor = Color3.FromHexString('#cc3322')
-cube.material = cubeMaterial
-cube.setPivotPoint(new Vector3(0.5, -0.5, 0.5))
+camera.target = new Vector3(0, 1, 0)
 
-camera.target = Vector3.Zero()
+const floor = MeshBuilder.CreateGround('floor', { width: 10, height: 10 })
+const floorMaterial = new StandardMaterial('floorMaterial1', scene)
 
-const frameRate = 10
-const animation = new Animation('beat', 'scaling.y', frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT)
+let floorColorsIndex = 0
+const floorColors = ['#4B5D67', '#322F3D', '#59405C', '#87556F'].map(hex => {
+  return Color3.FromHexString(hex)
+})
 
-const easingFunction = new CircleEase()
-easingFunction.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+floorMaterial.diffuseColor = floorColors[floorColorsIndex]
+floor.material = floorMaterial
+floor.receiveShadows = true
 
-animation.setKeys([
-  { frame: 0, value: 1 },
-  { frame: frameRate / 2, value: 1.1 },
-  { frame: 2 * frameRate, value: 1 },
-])
+const shadowGenerator = new ShadowGenerator(1024, spotLight)
+shadowGenerator.useBlurExponentialShadowMap = true
+shadowGenerator.blurKernel = 64
 
-cube.animations.push(animation)
+let animation
+
+SceneLoader.ImportMesh('', speaker, undefined, scene, (meshes, particleSystems, skeletons, animations) => {
+  shadowGenerator.addShadowCaster(meshes[1])
+  animation = animations[0]
+
+  animation.stop()
+})
 
 engine.runRenderLoop(() => {
   scene.render()
+})
+
+window.addEventListener('resize', () => {
+  engine.resize()
 })
 
 // 状態管理がしんどくて泣きそうになったら何かやり方を考える
@@ -69,9 +79,12 @@ function sing() {
     const now = new Date() - window.AppState.startedAt
 
     processBeats(now, (duration) => {
-      scene.beginAnimation(cube, 0, 2 * frameRate, false, 2 / duration)
+      animation.start(false, 2 / duration)
     })
-    processBars(now)
+    processBars(now, (duration) => {
+      floorColorsIndex = (floorColorsIndex + 1) % floorColors.length
+      floorMaterial.diffuseColor = floorColors[floorColorsIndex]
+    })
 
     setTimeout(sing, 10)
   }
@@ -95,8 +108,8 @@ function processBeats(timestamp, cb) {
   }
 }
 
-function processBars(timestamp) {
-  const bars = window.AppState.analysis.bars
+function processBars(timestamp, cb) {
+  const bars = window.AppState.analysis.sections
   const index = bars.findIndex(b => 1000 * b.start < timestamp)
 
   if (index !== -1) {
@@ -107,7 +120,9 @@ function processBars(timestamp) {
       { transform: 'scale(1.0)'}
     ], 1000 * bar.duration)
 
-    window.AppState.analysis.bars.splice(index, 1)
+    cb(bar.duration)
+
+    window.AppState.analysis.sections.splice(index, 1)
   }
 }
 
