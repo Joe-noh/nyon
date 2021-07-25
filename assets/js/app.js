@@ -3,6 +3,8 @@ import './shoelace'
 import { setupSpeaker } from './speaker'
 import { setupPlayer } from './spotify'
 
-const { beat, changeLightColor } = setupSpeaker('canvas')
+if (location.pathname === '/music') {
+  const { beat, changeLightColor } = setupSpeaker('canvas')
 
-setupPlayer({ onBeat: beat, onSection: changeLightColor })
+  setupPlayer({ onBeat: beat, onSection: changeLightColor })
+}

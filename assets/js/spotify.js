@@ -1,14 +1,5 @@
 import * as Music from './music'
 
-// 状態管理がしんどくて泣きそうになったら何かやり方を考える
-window.AppState = {
-  spotifyToken: document.querySelector('#token').dataset.token,
-  deviceId: null,
-  singing: false,
-  loading: false,
-  analysis: {}
-}
-
 const playButton = document.querySelector('#player-play')
 const stopButton = document.querySelector('#player-stop')
 
@@ -58,6 +49,15 @@ function showStopButton() {
 }
 
 export function setupPlayer({ onBeat, onSection }) {
+  // 状態管理がしんどくて泣きそうになったら何かやり方を考える
+  window.AppState = {
+    spotifyToken: document.querySelector('#token').dataset.token,
+    deviceId: null,
+    singing: false,
+    loading: false,
+    analysis: {}
+  }
+
   showPlayButton()
 
   window.onSpotifyWebPlaybackSDKReady = () => {
