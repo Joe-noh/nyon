@@ -9,50 +9,57 @@ window.AppState = {
   analysis: {}
 }
 
-function sing() {
+const playButton = document.querySelector('#player-play')
+const stopButton = document.querySelector('#player-stop')
+
+function sing(onBeat, onSection) {
   if (window.AppState.singing) {
     const now = new Date() - window.AppState.startedAt
 
-    processBeats(now)
-    processBars(now)
+    processBeats(now, (duration) => onBeat(duration))
+    processSections(now, () => onSection())
 
-    setTimeout(sing, 10)
+    setTimeout(() => sing(onBeat, onSection), 10)
   }
 }
 
-function processBeats(timestamp) {
+function processBeats(timestamp, onBeat) {
   const beats = window.AppState.analysis.beats
   const index = beats.findIndex(b => 1000 * b.start < timestamp)
 
   if (index !== -1) {
     const beat = beats[index]
-    const circle = document.querySelector('#circle_beat')
-    circle.animate([
-      { transform: `scaleX(${1 + beat.confidence})` },
-      { transform: 'scale(1.0)'}
-    ], 1000 * beat.duration)
 
+    onBeat(beat.duration)
     window.AppState.analysis.beats.splice(index, 1)
   }
 }
 
-function processBars(timestamp) {
-  const bars = window.AppState.analysis.bars
+function processSections(timestamp, onSection) {
+  const bars = window.AppState.analysis.sections
   const index = bars.findIndex(b => 1000 * b.start < timestamp)
 
   if (index !== -1) {
     const bar = bars[index]
-    const circle = document.querySelector('#circle_bar')
-    circle.animate([
-      { transform: `scaleY(${1 + bar.confidence})` },
-      { transform: 'scale(1.0)'}
-    ], 1000 * bar.duration)
 
-    window.AppState.analysis.bars.splice(index, 1)
+    onSection(bar.duration)
+    window.AppState.analysis.sections.splice(index, 1)
   }
 }
 
-export function setupPlayer() {
+function showPlayButton() {
+  playButton.style.display = 'block'
+  stopButton.style.display = 'none'
+}
+
+function showStopButton() {
+  playButton.style.display = 'none'
+  stopButton.style.display = 'block'
+}
+
+export function setupPlayer({ onBeat, onSection }) {
+  showPlayButton()
+
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
       name: 'Web Player',
@@ -76,7 +83,7 @@ export function setupPlayer() {
           window.AppState.singing = true
           window.AppState.startedAt = new Date() - state.position
 
-          sing()
+          sing(onBeat, onSection)
         }
       }
     })
@@ -85,7 +92,7 @@ export function setupPlayer() {
     player.addListener('ready', ({ device_id }) => {
       console.log('Ready with Device ID', device_id)
 
-      player.setVolume(0.2)
+      player.setVolume(0.1)
 
       window.AppState.deviceId = device_id
     })
@@ -99,18 +106,12 @@ export function setupPlayer() {
     player.connect()
   }
 
-  const playButton = document.querySelector('#play')
-  const pauseButton = document.querySelector('#pause')
-
-  playButton.style.display = 'block'
-  pauseButton.style.display = 'none'
-
   playButton.addEventListener('click', async () => {
     if (window.AppState.loading) {
       return
     }
 
-    const trackId = '3za3bQrlpdEwcT2C4t5Cag'
+    const trackId = '2nuta42lbR00JoPn8aw5A5'
 
     window.AppState.loading = true
 
@@ -119,14 +120,15 @@ export function setupPlayer() {
 
       await Music.play(trackId, window.AppState.deviceId)
 
-      playButton.style.display = 'none'
-      pauseButton.style.display = 'block'
+      showStopButton()
+    } catch (e) {
+      console.log(e)
     } finally {
       window.AppState.loading = false
     }
   })
 
-  pauseButton.addEventListener('click', async () => {
+  stopButton.addEventListener('click', async () => {
     if (window.AppState.loading) {
       return
     }
@@ -138,8 +140,9 @@ export function setupPlayer() {
 
       window.AppState.singing = false
 
-      playButton.style.display = 'block'
-      pauseButton.style.display = 'none'
+      showPlayButton()
+    } catch (e) {
+      console.log(e)
     } finally {
       window.AppState.loading = false
     }
