@@ -92,11 +92,16 @@ export function setupPlayer({ onBeat, onBar, onSection }) {
     // Playback status updates
     player.addListener('player_state_changed', (state) => {
       if (state) {
-        if (state.paused === false && !window.AppState.singing) {
-          window.AppState.singing = true
-          window.AppState.startedAt = new Date() - state.position
+        if (state.paused === true) {
+          window.AppState.singing = false
+          showPlayButton()
+        } else {
+          if (!window.AppState.singing) {
+            window.AppState.singing = true
+            window.AppState.startedAt = new Date() - state.position
 
-          sing(onBeat, onSection)
+            sing(onBeat, onBar, onSection)
+          }
         }
       }
     })
