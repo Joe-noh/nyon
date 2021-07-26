@@ -3,14 +3,15 @@ import * as Music from './music'
 const playButton = document.querySelector('#player-play')
 const stopButton = document.querySelector('#player-stop')
 
-function sing(onBeat, onSection) {
+function sing(onBeat, onBar, onSection) {
   if (window.AppState.singing) {
     const now = new Date() - window.AppState.startedAt
 
     processBeats(now, (duration) => onBeat(duration))
+    processBars(now, (duration) => onBar(duration))
     processSections(now, () => onSection())
 
-    setTimeout(() => sing(onBeat, onSection), 10)
+    setTimeout(() => sing(onBeat, onBar, onSection), 10)
   }
 }
 
@@ -23,6 +24,18 @@ function processBeats(timestamp, onBeat) {
 
     onBeat(beat.duration)
     window.AppState.analysis.beats.splice(index, 1)
+  }
+}
+
+function processBars(timestamp, onBar) {
+  const bars = window.AppState.analysis.bars
+  const index = bars.findIndex(b => 1000 * b.start < timestamp)
+
+  if (index !== -1) {
+    const bar = bars[index]
+
+    onBar(bar.duration)
+    window.AppState.analysis.bars.splice(index, 1)
   }
 }
 
@@ -48,7 +61,7 @@ function showStopButton() {
   stopButton.style.display = 'block'
 }
 
-export function setupPlayer({ onBeat, onSection }) {
+export function setupPlayer({ onBeat, onBar, onSection }) {
   // 状態管理がしんどくて泣きそうになったら何かやり方を考える
   window.AppState = {
     spotifyToken: document.querySelector('#token').dataset.token,

@@ -4,7 +4,7 @@ import { setupSpeaker } from './speaker'
 import { setupPlayer } from './spotify'
 
 if (location.pathname === '/music') {
-  const { beat, changeLightColor } = setupSpeaker('canvas')
+  const { beat, bar, changeLightColor } = setupSpeaker('canvas')
 
-  setupPlayer({ onBeat: beat, onSection: changeLightColor })
+  setupPlayer({ onBeat: beat, onBar: bar, onSection: changeLightColor })
 }
