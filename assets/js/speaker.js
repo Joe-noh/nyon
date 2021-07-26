@@ -7,14 +7,16 @@ import {
   StandardMaterial,
   ShadowGenerator,
   SceneLoader,
+  Animation,
   Color3,
   Vector3,
+  Matrix,
   ArcRotateCamera,
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
 import speaker from '../gltf/speaker.gltf'
 
-const floorColors = ['#4B5D67', '#322F3D', '#59405C', '#87556F'].map(hex => {
+const floorColors = ['#4B5D67', '#322F3D', '#59405C', '#805062'].map(hex => {
   return Color3.FromHexString(hex)
 })
 
@@ -28,14 +30,15 @@ export function setupSpeaker(canvasId) {
   const scene = new Scene(engine)
   scene.clearColor = Color3.FromHexString('#222222')
 
-  const camera = new ArcRotateCamera('camera', 2 * Math.PI / 3, Math.PI / 3, 6, Vector3.Zero(), scene)
+  const camera = new ArcRotateCamera('camera', 2 * Math.PI / 3, Math.PI / 2.5, 6, Vector3.Zero(), scene)
 
   const hemiLight = new HemisphericLight('hemiLight', Vector3.Up(), scene)
-  hemiLight.intensity = 0.5
 
-  const spotLight = new SpotLight('spotLight', new Vector3(3, 10, 2), new Vector3(-3, -10, -2), 1.5, 10, scene)
-  spotLight.intensity = 0.9
-  spotLight.diffuse = Color3.White()
+  const spotLight1 = new SpotLight('spotLight1', new Vector3(3, 10, 5), new Vector3(-3, -10, -5), 1.5, 10, scene)
+  spotLight1.diffuse = Color3.White()
+
+  const spotLight2 = new SpotLight('spotLight2', new Vector3(-3, 10, 5), new Vector3(3, -10, -5), 1.5, 10, scene)
+  spotLight2.diffuse = Color3.White()
 
   camera.target = new Vector3(0, 1, 0)
 
@@ -43,17 +46,47 @@ export function setupSpeaker(canvasId) {
   const floorMaterial = new StandardMaterial('floorMaterial1', scene)
 
   floorMaterial.diffuseColor = floorColors[floorColorsIndex]
+  floorMaterial.specularColor = Color3.Black()
   floor.material = floorMaterial
   floor.receiveShadows = true
 
-  const shadowGenerator = new ShadowGenerator(1024, spotLight)
-  shadowGenerator.useBlurExponentialShadowMap = true
-  shadowGenerator.blurKernel = 64
+  const shadowGenerators = [
+    new ShadowGenerator(1024, spotLight1),
+    new ShadowGenerator(1024, spotLight2),
+  ]
+
+  shadowGenerators.forEach(generator => {
+    generator.useBlurExponentialShadowMap = true
+    generator.blurKernel = 8
+  })
+
+  let speakerBody
+  const frameRate = 10
 
   SceneLoader.ImportMesh('', speaker, undefined, scene, (meshes, particleSystems, skeletons, animations) => {
-    shadowGenerator.addShadowCaster(meshes[1])
-    animation = animations[0]
+    speakerBody = meshes[1]
 
+    shadowGenerators.forEach(generator => {
+      generator.addShadowCaster(speakerBody)
+    })
+
+    speakerBody.rotationQuaternion = null
+
+    const pivotAt = new Vector3(0, -2, -1)
+    speakerBody.setPivotPoint(pivotAt)
+    speakerBody.position.set(0, 1.2, 0.5) // この数字、全く理解してない
+
+    const tilt = new Animation('tilt', 'rotation.x', frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT)
+
+    tilt.setKeys([
+      { frame: 0, value: 0.0 },
+      { frame: frameRate / 2, value: -Math.PI / 90 },
+      { frame: 2 * frameRate, value: 0.0 },
+    ])
+
+    speakerBody.animations.push(tilt)
+
+    animation = animations[0]
     animation.stop()
   })
 
@@ -68,6 +101,10 @@ export function setupSpeaker(canvasId) {
   return {
     beat(duration) {
       animation && animation.start(false, 2 / duration)
+    },
+
+    bar(duration) {
+      scene.beginAnimation(speakerBody, 0, 2 * frameRate, false, frameRate / 2)
     },
 
     changeLightColor() {
