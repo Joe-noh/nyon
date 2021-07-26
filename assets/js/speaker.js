@@ -31,11 +31,12 @@ export function setupSpeaker(canvasId) {
   const camera = new ArcRotateCamera('camera', 2 * Math.PI / 3, Math.PI / 3, 6, Vector3.Zero(), scene)
 
   const hemiLight = new HemisphericLight('hemiLight', Vector3.Up(), scene)
-  hemiLight.intensity = 0.5
 
-  const spotLight = new SpotLight('spotLight', new Vector3(3, 10, 2), new Vector3(-3, -10, -2), 1.5, 10, scene)
-  spotLight.intensity = 0.9
-  spotLight.diffuse = Color3.White()
+  const spotLight1 = new SpotLight('spotLight1', new Vector3(3, 10, 5), new Vector3(-3, -10, -5), 1.5, 10, scene)
+  spotLight1.diffuse = Color3.White()
+
+  const spotLight2 = new SpotLight('spotLight2', new Vector3(-3, 10, 5), new Vector3(3, -10, -5), 1.5, 10, scene)
+  spotLight2.diffuse = Color3.White()
 
   camera.target = new Vector3(0, 1, 0)
 
@@ -43,15 +44,25 @@ export function setupSpeaker(canvasId) {
   const floorMaterial = new StandardMaterial('floorMaterial1', scene)
 
   floorMaterial.diffuseColor = floorColors[floorColorsIndex]
+  floorMaterial.specularColor = Color3.Black()
   floor.material = floorMaterial
   floor.receiveShadows = true
 
-  const shadowGenerator = new ShadowGenerator(1024, spotLight)
-  shadowGenerator.useBlurExponentialShadowMap = true
-  shadowGenerator.blurKernel = 64
+  const shadowGenerators = [
+    new ShadowGenerator(1024, spotLight1),
+    new ShadowGenerator(1024, spotLight2),
+  ]
+
+  shadowGenerators.forEach(generator => {
+    generator.useBlurExponentialShadowMap = true
+    generator.blurKernel = 8
+  })
 
   SceneLoader.ImportMesh('', speaker, undefined, scene, (meshes, particleSystems, skeletons, animations) => {
-    shadowGenerator.addShadowCaster(meshes[1])
+    shadowGenerators.forEach(generator => {
+      generator.addShadowCaster(meshes[1])
+    })
+
     animation = animations[0]
 
     animation.stop()
